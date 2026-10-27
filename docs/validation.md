@@ -55,11 +55,24 @@ itself; sixty seconds each, Button 1 pressed at intervals).
 | Stream | Writes | Cycles | Parts | Different |
 | --- | ---: | ---: | --- | ---: |
 | *Lagrange Point* (VRC7) | 32,110 | 160,794,033 | DS1001, YM2413, YM2413B | **0** |
-| *Phantasy Star* (Japan) (Rev 1) | 19,882 | 53,781,698 | YM2413, YM2413B | **0** |
+| *Phantasy Star* (Japan) (Rev 1) | 16,028 | 53,781,240 | YM2413, YM2413B | **0** |
 | *Ys* (Japan) | 16,626 | 53,751,531 | YM2413 | **0** |
 | *Kenseiden* (Japan) | 21,462 | 53,780,890 | YM2413 | **0** |
 | *Fantasy Zone II* (Japan) | 88,007 | 53,782,761 | YM2413 | **0** |
 | *Super Wonder Boy - Monster World* (Japan) | 22,694 | 53,781,428 | YM2413 | **0** |
+
+The Master System streams are remade by
+
+```text
+PYTHONPATH=/path/to/sms-python/src python scripts/export_board_streams.py --board sms \
+    ROM --frames 3600 --press 600:16,900:16,1200:16,1500:16,2100:16 --out NAME.stream
+```
+
+byte for byte (checked 2026-10-27). *Phantasy Star*'s first stream (19,882 writes)
+came from the script before its pad handling was fixed and could not be remade; it was
+replaced by this one and run again: equal on both parts. sms-python's own FM unit
+(branch `fm-unit`, ports $F0-$F2 with the real detection port) writes the same
+16,028 writes on the same cycles as this script's stand-in.
 
 The VRC7 stream takes the VRC7's resonator as exactly two input clocks per CPU cycle
 (it is not locked to the CPU on the cartridge); the Master System's YM2413 shares

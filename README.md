@@ -18,7 +18,7 @@ It is a chip in the family's shape (chips are cores, boards compose cores), besi
 | What | Result | Tier |
 | --- | --- | --- |
 | MO and RO at every internal cycle against Nuked-OPLL @ 1269cf5: 20 synthetic streams, six parts | **126,612,624 cycles, 0 different** | die-derived (the judge) |
-| The same, music recorded from the boards: *Lagrange Point* (VRC7) and five Master System FM soundtracks | **805,042,105 cycles in all, 0 different** | die-derived |
+| The same, music recorded from the boards: *Lagrange Point* (VRC7) and five Master System FM soundtracks | **805,041,189 cycles in all, 0 different** | die-derived |
 | The log-sine and exponent ROMs, generated from their formulas | equal to the die's word for word | die-derived |
 | The VRC7's fifteen instruments | equal to its debug-mode dump byte for byte | hardware |
 | andete's captures of a real YM2413's pins: 36 BD and TOM | every one fits; off by more than one level on 1,508 of 138,128 quiet samples, the rest the ADC chain's; the DAC's slot order matches his table | hardware |
