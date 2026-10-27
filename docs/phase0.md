@@ -105,5 +105,6 @@ words and names.
 
 - The licence approach above: approved (2026-10-27), MIT like the family's cores.
 - Public: yes (2026-10-27), as the other chip cores.
-- Still open: whether the VRC7's output level in famicom-python stays rainwarrior's
-  +11.3 dB (AV Famicom) or also takes NewRisingSun-style recordings if any turn up.
+- The VRC7's output level in famicom-python: rainwarrior's +11.3 dB (AV Famicom),
+  kept (2026-10-27); James-F's +10.88 dB and the NSFe default agree within half a
+  decibel. Game recordings, if any turn up, would check the mix over music.
