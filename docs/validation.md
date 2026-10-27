@@ -52,7 +52,7 @@ itself; sixty seconds each, Button 1 pressed at intervals).
 
 | Stream | Writes | Cycles | Parts | Different |
 | --- | ---: | ---: | --- | ---: |
-| *Lagrange Point* (VRC7) | 32,110 | 160,794,033 | DS1001, YM2413 | **0** |
+| *Lagrange Point* (VRC7) | 32,110 | 160,794,033 | DS1001, YM2413, YM2413B | **0** |
 | *Phantasy Star* (Japan) (Rev 1) | 19,882 | 53,781,698 | YM2413, YM2413B | **0** |
 | *Ys* (Japan) | 16,626 | 53,751,531 | YM2413 | **0** |
 | *Kenseiden* (Japan) | 21,462 | 53,780,890 | YM2413 | **0** |
