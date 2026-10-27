@@ -33,10 +33,10 @@ What differs between parts is data on a variant value, as sn76489-python's
 from ym2413_python import OPLL, YM2413, DS1001
 
 chip = OPLL(YM2413)
-chip.write(0, 0x10)   # A0 = 0: the address
-chip.run(12)          # input clocks; the catalog asks 12 between address and data
-chip.write(1, 0x40)   # A0 = 1: the data
-chip.run(84)          # and 84 after data
+chip.write(0, 0x10)  # A0 = 0: the address
+chip.run(12)  # input clocks; the catalog asks 12 between address and data
+chip.write(1, 0x40)  # A0 = 1: the data
+chip.run(84)  # and 84 after data
 outputs = chip.take_outputs()  # [(mo, ro), ...], one per internal cycle
 ```
 
