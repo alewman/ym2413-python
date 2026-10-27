@@ -89,7 +89,7 @@ other cycles). Those stay open claims however well the core matches it.
 Speed is not a goal (the reference boards are correct, not fast); a Rust
 transcription and its -fast fork would come later, as for the YM2612.
 
-## Licence (decided, for review)
+## Licence (decided)
 
 The core is MIT, like the family. Nuked-OPLL is GPL-2.0, a stronger licence than
 Nuked-OPN2's LGPL-2.1 that ym2612-python cites. So: Nuked-OPLL is fetched into
@@ -101,10 +101,9 @@ measurements of silicon, not code). Where the core's structure must follow the
 die's pipeline to agree cycle by cycle, it is written in this repository's own
 words and names.
 
-## Decisions waiting for Aubrey
+## Decisions
 
-- The licence approach above.
-- Public or private: the other chip cores went public for free CI; this one would
-  too once it holds its first rung.
-- Whether the VRC7's output level in famicom-python stays rainwarrior's +11.3 dB
-  (AV Famicom) or also takes NewRisingSun-style recordings if any turn up.
+- The licence approach above: approved (2026-10-27), MIT like the family's cores.
+- Public: yes (2026-10-27), as the other chip cores.
+- Still open: whether the VRC7's output level in famicom-python stays rainwarrior's
+  +11.3 dB (AV Famicom) or also takes NewRisingSun-style recordings if any turn up.
