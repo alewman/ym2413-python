@@ -65,6 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--only", help="a stream name to run alone")
     parser.add_argument("--variant", action="append", help="variant names (default: all)")
+    parser.add_argument("--first", action="store_true", help="stop at the first difference")
     args = parser.parse_args(argv)
     variants = [VARIANTS[n] for n in args.variant] if args.variant else list(VARIANTS.values())
     bad = 0
@@ -76,6 +77,8 @@ def main(argv: list[str] | None = None) -> int:
             status = "equal" if first is None else f"DIFFER at cycle {first}"
             print(f"{name:28s} {variant.name:8s} {cycles:9,d} cycles: {status}", flush=True)
             bad += first is not None
+            if bad and args.first:
+                return 1
     return 1 if bad else 0
 
 

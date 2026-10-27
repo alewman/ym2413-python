@@ -243,6 +243,94 @@ def key_scaling() -> tuple[list, int]:
     return w.done(300)
 
 
+def back_to_back() -> tuple[list, int]:
+    """Two writes to one port on consecutive cycles: the second is not a new strobe."""
+    w = Writer()
+    w.reg(0x30, 0x40)
+    w.note(0, 0x120, 4)
+    for gap in (1, 1, 2, 1, 3):
+        w.events.append((w.cycle, 0, 0x10))
+        w.events.append((w.cycle + gap, 0, 0x30))
+        w.cycle += gap + 3
+        w.events.append((w.cycle, 1, 0x71))
+        w.events.append((w.cycle + gap, 1, 0x15))
+        w.cycle += gap + 40
+        w.wait(200)
+    # Address, address, data on consecutive cycles: a second address strobe, if it
+    # counted, would latch the data byte as the address.
+    for value in (0x21, 0x14):
+        w.events += [(w.cycle, 0, 0x30), (w.cycle + 1, 0, 0x10), (w.cycle + 2, 1, value)]
+        w.cycle += 60
+        w.wait(200)
+    return w.done(500)
+
+
+def rhythm_toggles() -> tuple[list, int]:
+    """Rhythm mode switched on and off with the data strobe on every cycle of a sample."""
+    w = Writer()
+    for ch in (6, 7, 8):
+        w.note(ch, 0x150, 3, key=False)
+    w.reg(0x36, 0x00)
+    w.reg(0x37, 0x00)
+    w.reg(0x38, 0x00)
+    for offset in range(SAMPLE):
+        w.cycle += (offset - w.cycle) % SAMPLE
+        w.reg(0x0E, 0x3F, after_data=1)
+        w.wait(40)
+        w.cycle += (offset - w.cycle) % SAMPLE
+        w.reg(0x0E, 0x00, after_data=1)
+        w.wait(40)
+    return w.done(300)
+
+
+def slow_envelope() -> tuple[list, int]:
+    """The slowest rates for six seconds: the envelope timer's high bits come into play."""
+    w = Writer()
+    _custom(w, [0x01, 0x21, 0x00, 0x07, 0x11, 0x13, 0x11, 0xF1])
+    w.reg(0x30, 0x00)
+    w.note(0, 0x100, 4)
+    w.reg(0x31, 0x10)
+    w.note(1, 0x080, 3)
+    w.wait(49716 * 3)
+    w.note(0, 0x100, 4, key=False)
+    w.note(1, 0x080, 3, key=False)
+    w.wait(49716 * 3)
+    return w.done(100)
+
+
+def timer_rollover() -> tuple[list, int]:
+    """Twelve seconds with a release at rate group 11 kept going: past the envelope
+    timer's 2^17 rollover, where the lowest set bit is the top one."""
+    w = Writer()
+    _custom(w, [0x01, 0x01, 0x3F, 0x07, 0xF0, 0xF0, 0x0B, 0x0B])
+    w.reg(0x30, 0x00)
+    while w.cycle < 12 * 49716 * SAMPLE:  # re-keyed before it reaches the floor
+        w.note(0, 0x100, 4)
+        w.wait(300)
+        w.note(0, 0x100, 4, key=False)
+        w.wait(100)
+    return w.done(100)
+
+
+def rhythm_key_races(seed: int = 4) -> tuple[list, int]:
+    """Rhythm mode toggled while channels 6-8 key on, at random cycles, release instant:
+    the cycle the rhythm enable takes effect against a key-on starting."""
+    w = Writer()
+    _custom(w, [0x01, 0x01, 0x00, 0x07, 0xFF, 0xFF, 0x0F, 0x0F])  # full feedback
+    for ch in (6, 7, 8):
+        w.reg(0x30 + ch, 0x00)
+    rng = random.Random(seed)
+    for _ in range(1500):
+        ch = rng.choice((6, 7, 8))
+        w.reg(0x20 + ch, 0x18, after_address=1, after_data=rng.randrange(1, 18))
+        rhythm = rng.choice((0x20, 0x00, 0x3F))
+        w.reg(0x0E, rhythm, after_address=1, after_data=rng.randrange(1, 18))
+        w.wait(rng.randrange(2, 6))
+        w.reg(0x20 + ch, 0x08, after_address=1, after_data=1)
+        w.wait(rng.randrange(1, 4))
+    return w.done(200)
+
+
 STREAMS = {
     "silence": silence(),
     "each_instrument": each_instrument(),
@@ -257,6 +345,11 @@ STREAMS = {
     "multiples": multiples(),
     "rates": rates(),
     "key_scaling": key_scaling(),
+    "back_to_back": back_to_back(),
+    "rhythm_toggles": rhythm_toggles(),
+    "slow_envelope": slow_envelope(),
+    "timer_rollover": timer_rollover(),
+    "rhythm_key_races": rhythm_key_races(),
     "random_1": random_soup(11),
     "random_2": random_soup(12),
 }
