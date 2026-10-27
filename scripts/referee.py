@@ -66,10 +66,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--only", help="a stream name to run alone")
     parser.add_argument("--variant", action="append", help="variant names (default: all)")
     parser.add_argument("--first", action="store_true", help="stop at the first difference")
+    parser.add_argument("--stream", type=Path, action="append", help="a stream file to run instead")
     args = parser.parse_args(argv)
     variants = [VARIANTS[n] for n in args.variant] if args.variant else list(VARIANTS.values())
+    streams = dict(STREAMS)
+    if args.stream:
+        streams = {}
+        for path in args.stream:
+            stream = [tuple(r) for r in struct.iter_unpack("<QBB", path.read_bytes())]
+            streams[path.stem] = (stream, (stream[-1][0] if stream else 0) + 18 * 2000)
     bad = 0
-    for name, (stream, cycles) in STREAMS.items():
+    for name, (stream, cycles) in streams.items():
         if args.only and name != args.only:
             continue
         for variant in variants:

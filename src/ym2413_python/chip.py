@@ -198,6 +198,19 @@ class OPLL:
         outputs, self._outputs = self._outputs, []
         return outputs
 
+    def take_samples(self) -> list[tuple[int, int]]:
+        """The same, summed per pin over each whole sample's 18 cycles: the level a
+        board's analogue filter integrates. Cycles of an unfinished sample wait."""
+        count = len(self._outputs) - len(self._outputs) % CYCLES_PER_SAMPLE
+        outputs, self._outputs = self._outputs[:count], self._outputs[count:]
+        return [
+            (
+                sum(mo for mo, _ in outputs[i : i + CYCLES_PER_SAMPLE]),
+                sum(ro for _, ro in outputs[i : i + CYCLES_PER_SAMPLE]),
+            )
+            for i in range(0, count, CYCLES_PER_SAMPLE)
+        ]
+
     # -- one internal cycle (the order of opll.c:1062) -----------------------
 
     def _cycle(self) -> None:
@@ -589,9 +602,7 @@ class OPLL:
     def _channel_output(self) -> None:
         cycle = self.cycle
         value = self.ch_out
-        muted = bool((cycle // 3) & 1) or (
-            bool(self.rhythm_on & 0x40) and (cycle + 15) % 18 >= 12
-        )
+        muted = bool((cycle // 3) & 1) or (bool(self.rhythm_on & 0x40) and (cycle + 15) % 18 >= 12)
         stage = self.variant.output_stage
         if stage == "vrc7":
             out = value + 1 if value >= 0 else value
