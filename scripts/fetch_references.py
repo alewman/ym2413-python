@@ -6,7 +6,8 @@
 
 Into ``reference/`` (ignored). Nuked-OPLL is GPL-2.0: read and run as the judge
 here, never copied into this repository. emu2413 (MIT) and ymfm (BSD-3-Clause)
-are detectors. The documents are checked by SHA-256.
+are detectors. andete-ym2413 (no licence) holds measurements of a real chip, read by
+scripts/hardware_captures.py and never copied. The documents are checked by SHA-256.
 """
 
 from __future__ import annotations
@@ -39,6 +40,12 @@ REPOS = [
         "url": "https://github.com/aaronsgiles/ymfm",
         "rev": "81aec25ccbb98f4873a255f7551ac4dadac59b4a",
         "why": "Aaron Giles's OPL family, MAME's: a detector. BSD-3-Clause.",
+    },
+    {
+        "path": "andete-ym2413",
+        "url": "https://github.com/andete/ym2413",
+        "rev": "4893d1c09faa0450b5d3355f19b7682d72822501",
+        "why": "andete's measurements of a real YM2413 (2015-2017): hardware. No licence.",
     },
 ]
 

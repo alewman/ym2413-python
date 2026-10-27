@@ -21,6 +21,7 @@ It is a chip in the family's shape (chips are cores, boards compose cores), besi
 | The same, music recorded from the boards: *Lagrange Point* (VRC7) and five Master System FM soundtracks | **805,042,105 cycles in all, 0 different** | die-derived |
 | The log-sine and exponent ROMs, generated from their formulas | equal to the die's word for word | die-derived |
 | The VRC7's fifteen instruments | equal to its debug-mode dump byte for byte | hardware |
+| andete's captures of a real YM2413's pins: 36 BD and TOM | every one fits; off by more than one level on 1,508 of 138,128 quiet samples, the rest the ADC chain's; the DAC's slot order matches his table | hardware |
 | 30 seeded faults | 30 caught by the referee; 29 by the 14 conformance examples alone | not an oracle |
 
 What each result supports is [docs/claims.md](docs/claims.md); the runs are
