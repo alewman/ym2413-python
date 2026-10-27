@@ -1,0 +1,88 @@
+{
+ "version": 1,
+ "name": "test-bits-ym2413",
+ "variant": "YM2413",
+ "clocks": 31264,
+ "events": [
+  {
+   "t": 256,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 268,
+   "kind": "data",
+   "data": 48
+  },
+  {
+   "t": 352,
+   "kind": "address",
+   "data": 16
+  },
+  {
+   "t": 364,
+   "kind": "data",
+   "data": 80
+  },
+  {
+   "t": 448,
+   "kind": "address",
+   "data": 32
+  },
+  {
+   "t": 460,
+   "kind": "data",
+   "data": 25
+  },
+  {
+   "t": 544,
+   "kind": "address",
+   "data": 15
+  },
+  {
+   "t": 556,
+   "kind": "data",
+   "data": 1
+  },
+  {
+   "t": 6400,
+   "kind": "address",
+   "data": 15
+  },
+  {
+   "t": 6412,
+   "kind": "data",
+   "data": 4
+  },
+  {
+   "t": 12256,
+   "kind": "address",
+   "data": 15
+  },
+  {
+   "t": 12268,
+   "kind": "data",
+   "data": 2
+  },
+  {
+   "t": 18112,
+   "kind": "address",
+   "data": 15
+  },
+  {
+   "t": 18124,
+   "kind": "data",
+   "data": 5
+  },
+  {
+   "t": 23968,
+   "kind": "address",
+   "data": 15
+  },
+  {
+   "t": 23980,
+   "kind": "data",
+   "data": 0
+  }
+ ]
+}

@@ -1,0 +1,208 @@
+{
+ "version": 1,
+ "name": "instruments-ds1001",
+ "variant": "DS1001",
+ "clocks": 79936,
+ "events": [
+  {
+   "t": 256,
+   "kind": "address",
+   "data": 16
+  },
+  {
+   "t": 268,
+   "kind": "data",
+   "data": 129
+  },
+  {
+   "t": 352,
+   "kind": "address",
+   "data": 32
+  },
+  {
+   "t": 364,
+   "kind": "data",
+   "data": 25
+  },
+  {
+   "t": 448,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 460,
+   "kind": "data",
+   "data": 0
+  },
+  {
+   "t": 4864,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 4876,
+   "kind": "data",
+   "data": 16
+  },
+  {
+   "t": 9280,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 9292,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 13696,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 13708,
+   "kind": "data",
+   "data": 48
+  },
+  {
+   "t": 18112,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 18124,
+   "kind": "data",
+   "data": 64
+  },
+  {
+   "t": 22528,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 22540,
+   "kind": "data",
+   "data": 80
+  },
+  {
+   "t": 26944,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 26956,
+   "kind": "data",
+   "data": 96
+  },
+  {
+   "t": 31360,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 31372,
+   "kind": "data",
+   "data": 112
+  },
+  {
+   "t": 35776,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 35788,
+   "kind": "data",
+   "data": 128
+  },
+  {
+   "t": 40192,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 40204,
+   "kind": "data",
+   "data": 144
+  },
+  {
+   "t": 44608,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 44620,
+   "kind": "data",
+   "data": 160
+  },
+  {
+   "t": 49024,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 49036,
+   "kind": "data",
+   "data": 176
+  },
+  {
+   "t": 53440,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 53452,
+   "kind": "data",
+   "data": 192
+  },
+  {
+   "t": 57856,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 57868,
+   "kind": "data",
+   "data": 208
+  },
+  {
+   "t": 62272,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 62284,
+   "kind": "data",
+   "data": 224
+  },
+  {
+   "t": 66688,
+   "kind": "address",
+   "data": 48
+  },
+  {
+   "t": 66700,
+   "kind": "data",
+   "data": 240
+  },
+  {
+   "t": 71104,
+   "kind": "address",
+   "data": 16
+  },
+  {
+   "t": 71116,
+   "kind": "data",
+   "data": 129
+  },
+  {
+   "t": 71200,
+   "kind": "address",
+   "data": 32
+  },
+  {
+   "t": 71212,
+   "kind": "data",
+   "data": 9
+  }
+ ]
+}

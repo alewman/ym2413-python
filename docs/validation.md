@@ -74,10 +74,13 @@ operator stages proved invisible on both pins (the mutant against the core direc
 on 35 seeds of the race stream: equal): an equivalent mutant, recorded and replaced
 by a mutant of the cycles that rule acts on.
 
+The conformance examples alone (`--examples-only`, what a port's gate is): **29 of 30**;
+the one missed needs the timer's 2^17 rollover, ten seconds of chip time
+([conformance.md](conformance.md)).
+
 ## Not yet
 
-A conformance kit for transcriptions (text traces with expected outputs), the
-detectors' comparison, and adoption by famicom-python (the VRC7's sound) and
+The detectors' comparison, and adoption by famicom-python (the VRC7's sound) and
 sms-python (the FM unit).
 
 ## Speed

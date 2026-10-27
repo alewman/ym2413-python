@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Seed faults into the chip, one at a time, and check the referee catches each.
 
-    python scripts/mutation.py [--jobs N]
+    python scripts/mutation.py [--jobs N] [--examples-only]
 
 A gate that cannot fail proves nothing. Each mutant changes one place in
 ``src/ym2413_python/chip.py`` -- a rule the chip is known to have, broken the way a
@@ -66,14 +66,20 @@ MUTANTS = [
 GATE_VARIANTS = ("YM2413", "DS1001", "YM2413B")
 
 
+EXAMPLES_ONLY = "--examples-only" in sys.argv[1:]
+
+
 def gate(src: Path) -> bool:
-    """True when the referee still finds every stream equal (the mutant survives)."""
-    variants = [arg for name in GATE_VARIANTS for arg in ("--variant", name)]
+    """True when the gate passes (the mutant survives): the referee's streams, or with
+    ``--examples-only`` the conformance examples alone (what a port's gate catches)."""
     env = dict(os.environ, PYTHONPATH=f"{src}{os.pathsep}{ROOT / 'scripts'}")
-    result = subprocess.run(
-        [sys.executable, str(ROOT / "scripts" / "referee.py"), "--first", *variants],
-        cwd=ROOT, env=env, capture_output=True, text=True,
-    )  # fmt: skip
+    if EXAMPLES_ONLY:
+        command = [sys.executable, "-m", "ym2413_python.conformance", "check",
+                   str(ROOT / "examples" / "conformance")]  # fmt: skip
+    else:
+        variants = [arg for name in GATE_VARIANTS for arg in ("--variant", name)]
+        command = [sys.executable, str(ROOT / "scripts" / "referee.py"), "--first", *variants]
+    result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
     return result.returncode == 0
 
 
@@ -97,6 +103,7 @@ def run_mutant(mutant: tuple[str, str, str]) -> tuple[str, bool]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument("--examples-only", action="store_true", help="gate on the examples alone")
     args = parser.parse_args()
     for name, old, _ in MUTANTS:
         target = ROOT / "src" / "ym2413_python" / ("variants.py" if "raw[3]" in old else "chip.py")

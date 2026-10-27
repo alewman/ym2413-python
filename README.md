@@ -21,11 +21,12 @@ It is a chip in the family's shape (chips are cores, boards compose cores), besi
 | The same, music recorded from the boards: *Lagrange Point* (VRC7) and five Master System FM soundtracks | **644,248,072 cycles in all, 0 different** | die-derived |
 | The log-sine and exponent ROMs, generated from their formulas | equal to the die's word for word | die-derived |
 | The VRC7's fifteen instruments | equal to its debug-mode dump byte for byte | hardware |
-| 30 seeded faults | 30 caught | not an oracle |
+| 30 seeded faults | 30 caught by the referee; 29 by the 14 conformance examples alone | not an oracle |
 
 What each result supports is [docs/claims.md](docs/claims.md); the runs are
 [docs/validation.md](docs/validation.md); the API is [docs/contract.md](docs/contract.md);
-how the work was planned is [docs/phase0.md](docs/phase0.md).
+a port proves itself with [docs/conformance.md](docs/conformance.md); how the work
+was planned is [docs/phase0.md](docs/phase0.md).
 
 ## Minimal host
 

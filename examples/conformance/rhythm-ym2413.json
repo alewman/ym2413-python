@@ -1,0 +1,228 @@
+{
+ "version": 1,
+ "name": "rhythm-ym2413",
+ "variant": "YM2413",
+ "clocks": 72928,
+ "events": [
+  {
+   "t": 256,
+   "kind": "address",
+   "data": 22
+  },
+  {
+   "t": 268,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 352,
+   "kind": "address",
+   "data": 38
+  },
+  {
+   "t": 364,
+   "kind": "data",
+   "data": 5
+  },
+  {
+   "t": 448,
+   "kind": "address",
+   "data": 23
+  },
+  {
+   "t": 460,
+   "kind": "data",
+   "data": 80
+  },
+  {
+   "t": 544,
+   "kind": "address",
+   "data": 39
+  },
+  {
+   "t": 556,
+   "kind": "data",
+   "data": 5
+  },
+  {
+   "t": 640,
+   "kind": "address",
+   "data": 24
+  },
+  {
+   "t": 652,
+   "kind": "data",
+   "data": 192
+  },
+  {
+   "t": 736,
+   "kind": "address",
+   "data": 40
+  },
+  {
+   "t": 748,
+   "kind": "data",
+   "data": 5
+  },
+  {
+   "t": 832,
+   "kind": "address",
+   "data": 54
+  },
+  {
+   "t": 844,
+   "kind": "data",
+   "data": 2
+  },
+  {
+   "t": 928,
+   "kind": "address",
+   "data": 55
+  },
+  {
+   "t": 940,
+   "kind": "data",
+   "data": 49
+  },
+  {
+   "t": 1024,
+   "kind": "address",
+   "data": 56
+  },
+  {
+   "t": 1036,
+   "kind": "data",
+   "data": 19
+  },
+  {
+   "t": 1120,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 1132,
+   "kind": "data",
+   "data": 48
+  },
+  {
+   "t": 9856,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 9868,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 12112,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 12124,
+   "kind": "data",
+   "data": 40
+  },
+  {
+   "t": 20848,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 20860,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 23104,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 23116,
+   "kind": "data",
+   "data": 36
+  },
+  {
+   "t": 31840,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 31852,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 34096,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 34108,
+   "kind": "data",
+   "data": 34
+  },
+  {
+   "t": 42832,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 42844,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 45088,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 45100,
+   "kind": "data",
+   "data": 33
+  },
+  {
+   "t": 53824,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 53836,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 56080,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 56092,
+   "kind": "data",
+   "data": 63
+  },
+  {
+   "t": 64816,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 64828,
+   "kind": "data",
+   "data": 32
+  },
+  {
+   "t": 67072,
+   "kind": "address",
+   "data": 14
+  },
+  {
+   "t": 67084,
+   "kind": "data",
+   "data": 0
+  }
+ ]
+}
