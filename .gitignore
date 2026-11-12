@@ -1,0 +1,20 @@
+# Python and package builds
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments and tooling
+.venv/
+.venv-*/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Fetched references (scripts/fetch_references.py). Third-party: never commit them.
+reference/
+
+# Register streams exported from a board. Derived from ROMs: local only.
+validation/streams/
