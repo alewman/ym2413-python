@@ -31,9 +31,11 @@ What is cited in place and only checked by --local (never copied here):
   measurement write-ups and result data are pinned. Its .cc and .hh files are
   not to be opened (docs/phase0.md, "Sources found and not read").
 
-What is deliberately NOT fetched: Nuked-OPLL (GPL). Rule 8 of docs/restart.md
-allows it to be run as a closed box; the build session adds that pin together
-with the harness, and only opll.h, LICENSE and the README may be opened.
+Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) IS fetched, for the closed-box rung
+only, under docs/restart.md rule 8: validation/nuked_harness.c is compiled
+against it and nothing else touches it. Only opll.h and LICENSE may be opened
+(the repository has no README). opll.c is compiled and never opened, searched or
+quoted, including when a comparison fails.
 """
 
 from __future__ import annotations
@@ -54,6 +56,9 @@ YMFM = "https://raw.githubusercontent.com/aaronsgiles/ymfm/81aec25ccbb98f4873a25
 # A GitHub wiki: the raw host takes no commit in the path. Wiki HEAD when pinned:
 # b8b2030f2ce9f220f66d490924ef26ab17269caa. The SHA-256 below is the real pin.
 PATCHES = "https://raw.githubusercontent.com/wiki/plgDavid/misc"
+NUKED_OPLL = (
+    "https://raw.githubusercontent.com/nukeykt/Nuked-OPLL/1269cf5a783b65583b50fa2464d08be75830aaa0"
+)
 
 # The capture project cited in place is andete/ym2413 at commit
 # 4893d1c09faa0450b5d3355f19b7682d72822501 (2020-05-01).
@@ -126,6 +131,23 @@ PINS: tuple[Pin, ...] = (
         "opll-patches/Copyright-free-OPLL(x)-ROM-patches.md",
         f"{PATCHES}/Copyright-free-OPLL(x)-ROM-patches.md",
         "f49652c807c39e9ca221023d7357747d3ae5a6d45a491f226cf2cfe9fde63437",
+    ),
+    # Nuke.YKT, Nuked-OPLL, GPL-2.0-or-later: a closed-box detector (rule 8).
+    # RUN ONLY. opll.c must not be opened; the harness uses opll.h alone.
+    Pin(
+        "nuked-opll/LICENSE",
+        f"{NUKED_OPLL}/LICENSE",
+        "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    ),
+    Pin(
+        "nuked-opll/opll.h",
+        f"{NUKED_OPLL}/opll.h",
+        "4af73da64dfcb6a19392104c8d37865da9c3a00382ba377617bc1fe1228e82de",
+    ),
+    Pin(
+        "nuked-opll/opll.c",
+        f"{NUKED_OPLL}/opll.c",
+        "d486915d0238be9650250ac91b0bb4024bfc236acd1893359648e5088144fc45",
     ),
 )
 

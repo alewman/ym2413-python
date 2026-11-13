@@ -109,11 +109,21 @@ made executable, formatting).
   U22, U23, U24, pinning the default so that changing it is deliberate.
 - **514 tests pass, 1 xfailed** (the open item above). Lint clean.
 
+## Rung 6: Nuked-OPLL as a closed box (second session, 2026-11-13)
+
+Pinned at `1269cf5` (`scripts/fetch_references.py`); `validation/nuked_harness.c`
+uses only `OPLL_Reset`, `OPLL_Clock`, `OPLL_Write`; `validation/closed_box.py` runs
+every stream of `validation/streams.py` on both variants in two alignment frames
+and reports per pin. Results and the open findings O1 to O7 are in
+`docs/validation.md`, rung 6. **No core change came from it; nothing was tuned.**
+The main finding: wherever a modulator sounds, the model's carrier runs about a
+sample ahead of the core's, which keeps S4's measured lag (T11, C7). Plain sines
+and vibrato agree on every slot.
+
 ## Not started
 
-- Rung 2b (S4's capture files in place), rung 5 (emu2413 as a detector), rung 6
-  (Nuked-OPLL closed box: nothing fetched, no harness, `fetch_references.py`
-  not extended). **No detector has been run; no constant was tuned to one.**
+- Rung 2b (S4's capture files in place), rung 5 (emu2413 as a detector).
+  Further one-register experiments on the closed box for finding O6.
 - `validation/faults.py`.
 - `README.md` (still the Phase 0 text), `docs/claims.md`, the update of
   `docs/validation.md`, `docs/api.md` (T6's integer outputs and `trace`).
@@ -152,6 +162,11 @@ made executable, formatting).
 7. Second session: a grep of `20150320.txt` through `prose.py --tables`
    displayed the same `eg_shift` formula line as slip 1 (the filter does not
    catch it). Nothing was taken from it; spec 8.5 already states the rule.
+8. Second session: Nuked-OPLL's `opll.h` (allowed) declares the model's whole
+   state structure; its field names were seen, among them names for rhythm-mode
+   phase bits. Nothing was taken from them: the provisional cymbal form (T8)
+   predates this and was not changed, and the harness does not touch the
+   structure.
 
 All of these are also in `provenance-audit.md` except 5 and 6.
 
@@ -160,7 +175,7 @@ All of these are also in `provenance-audit.md` except 5 and 6.
 1. Done (rung 2a triage above).
 2. Done (rung 3 and the provisional record above).
 3. Done; keep it clean.
-4. Extend `scripts/fetch_references.py` with a pinned Nuked-OPLL (header,
+4. Done (rung 6 above). Was: extend `scripts/fetch_references.py` with a pinned Nuked-OPLL (header,
    LICENSE, README may be opened; `opll.c` never). Write
    `validation/nuked_harness.c` and `validation/closed_box.py` after
    sn76489-python's; feed `validation/streams.py`. Record differences as open;
