@@ -196,8 +196,8 @@ class OPLL:
         """A write with A0 = ``port``: 0 latches an address, 1 stores data there.
 
         Spec 3.1, 3.2 (documented, S1): the address stays latched. PROVISIONAL
-        (T7, U9): a data write acts on every slot that starts after it; the waits
-        the manual asks for are not modelled.
+        (T7, U9): a data write acts from the next slot boundary (see ``run``);
+        the waits the manual asks for are not modelled.
         """
         value &= 0xFF
         if port & 1 == 0:
@@ -323,13 +323,11 @@ class OPLL:
     def run(self, clocks: int) -> None:
         """Advance by input clocks. ``run(a); run(b)`` equals ``run(a + b)``.
 
-        A slot is computed as its first clock passes, so a write made between two
-        calls acts on the slots that begin after it (T7).
+        PROVISIONAL (T7, U9): a slot is computed as its last clock passes, so a
+        write lands at the next slot boundary: it acts on the slot it falls in and
+        on every later one. A sample is complete on every 72nd clock.
         """
-        before = self.clock_phase
-        after = before + clocks
-        slots = (after + 3) // CLOCKS_PER_CYCLE - (before + 3) // CLOCKS_PER_CYCLE
-        self.clock_phase = after % CLOCKS_PER_CYCLE
+        slots, self.clock_phase = divmod(self.clock_phase + clocks, CLOCKS_PER_CYCLE)
         for _ in range(slots):
             self._run_slot()
 
