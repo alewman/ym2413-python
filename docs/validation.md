@@ -209,7 +209,7 @@ S6, and by *further experiments on the closed box* (change one register, compare
 again), as rule 8 allows. If nothing settles it, the difference is written in the
 README as open. The model's source stays closed.
 
-**Two uses that need the owner's word first** (decisions P6 and P3): using the
+**Two uses that need the owner's word first** (decision P6): using the
 closed box to recover the YM2413's instrument ROM by searching for the user tone
 that reproduces each built-in voice exactly, and using it to choose among spec.md's
 unsettled items (U4, U5, U7, U8, U9). Both go beyond "a difference says where to
