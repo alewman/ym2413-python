@@ -2,25 +2,100 @@
 
 The Yamaha YM2413 (OPLL) FM sound chip, and the VRC7's DS1001 variant, as a
 readable pure-Python core for the family's boards (sms-python's FM unit,
-famicom-python's mapper 85).
+famicom-python's mapper 85). No runtime dependencies. PyPy 3.11 is the supported
+interpreter.
 
-**Status (2026-11-12): Phase 0 is done; there is no model yet.** This repository is
-a restart: read [docs/restart.md](docs/restart.md) first for why and for the rules.
-Phase 0 found the sources and the judges and wrote no chip code:
+```python
+from ym2413_python import OPLL, YM2413
 
-- [docs/phase0.md](docs/phase0.md): every source, its licence and tier, what it can
-  settle, and what has no source.
-- [docs/spec.md](docs/spec.md): the behaviour, each statement marked documented,
-  measured or unsettled.
-- [docs/validation.md](docs/validation.md): the ladder of checks.
-- [docs/handoff-brief.md](docs/handoff-brief.md): for the build session, with the
-  open decisions.
-- [docs/api.md](docs/api.md): what the boards need.
+chip = OPLL(YM2413)
+for register, value in ((0x30, 0x30), (0x10, 0x20), (0x20, 0x17)):
+    chip.write(0, register)   # latch an address
+    chip.write(1, value)      # piano, full volume; F-number $120, block 3, key on
+    chip.run(84)
+chip.run(3_579_545)           # one second of the chip's clock
+pairs = chip.take_outputs()   # one (melody, rhythm) pair per 72 clocks
+```
 
-`python scripts/fetch_references.py --local` fetches and verifies the references.
+[docs/api.md](docs/api.md) is the whole surface.
 
-`seed/streams.py` is the one thing carried over: synthetic register streams,
-each exercising one feature. They are test inputs. They say nothing about what
-the chip should output.
+## Status (2026-11-13)
 
-MIT.
+**A restart, built from documents.** An earlier core under this name was a
+translation of a GPL model and was withdrawn; [docs/restart.md](docs/restart.md)
+has the rules this one is written under. The code is written from
+[docs/spec.md](docs/spec.md), which is written from the sources listed in
+[docs/phase0.md](docs/phase0.md); [docs/provenance-audit.md](docs/provenance-audit.md)
+gives every statement's chain. Every rule in the code names its spec section,
+or says CHOICE or PROVISIONAL.
+
+What it supports, and no more: *the core does what Yamaha's application manual
+says, reproduces what the openMSX project reports measuring on one real YM2413,
+and plays the DS1001's own instrument ROM as the NESdev wiki gives it.* **No
+recording of a console is in hand, so nothing here is claimed exact to a
+console.** The YM2413's fifteen built-in melodic voices are an emulator's
+hand-tuned table, not a dump: the largest gap. [docs/claims.md](docs/claims.md)
+lists each claim with its evidence; [docs/validation.md](docs/validation.md)
+says what was run and what it showed.
+
+- 514 tests pass on PyPy 3.11 (rungs 0 to 3 and the provisional behaviours),
+  plus one expected failure recorded as an open difference.
+- `validation/faults.py` breaks the core in 30 ways; every fault is noticed.
+- Nuked-OPLL was run as a closed box and **its source was not read**
+  (`validation/closed_box.py`). Plain sines and vibrato agree on every slot;
+  the differences elsewhere are written down as open, and nothing was tuned to
+  it. The largest: the model leaves out the one-sample modulator lag that the
+  openMSX measurements show and this core keeps.
+- About 11 times real time on PyPy with nine channels sounding.
+- Local only: not pushed, not on PyPI, not adopted by a board yet.
+
+## What is known, and how
+
+*documented*: a document says so (tier 2 is Yamaha, tier 3 a community author
+who tested on hardware). *measured*: a capture from hardware says so (here, the
+openMSX project's write-ups). *provisional*: no source settles it; the value is a
+decision, held as data on the variant or labelled in the code. Spec section
+numbers in brackets.
+
+| Behaviour | `YM2413` | `DS1001` |
+|---|---|---|
+| Register map, write protocol, slot order [2-4] | documented, tier 2 | documented, tier 3 (S6) |
+| Built-in melodic voices [5.4, 5.5] | **provisional**: emu2413's hand-tuned table (T1) | documented, tier 3: the chip's ROM, read out |
+| Percussion settings [5.6] | measured as fits; snare byte disputed (C4) | read out (not heard: no rhythm pin) |
+| Sine and exponential ROMs, operator arithmetic [6.1-6.10] | measured (via the OPL2/OPL3 ROM read-outs) | assumed the same (U16) |
+| Modulation, feedback, the one-sample lag [6.11-6.13] | measured; the lag's mechanism a choice (T11) | assumed the same |
+| Phase generator [7.1-7.6] | measured | assumed the same |
+| Vibrato [7.7, 7.8] | top pitch range measured approximately; the rest provisional (T3) | as left |
+| Envelope rates, attack, states [8] | measured; the alignment of rates 48 to 59 a choice (U23) | assumed the same |
+| Key scaling [9] | documented and measured | assumed the same |
+| Tremolo [10] | measured | assumed the same |
+| Rhythm mode [11] | measured, with provisional percussion phases (T8, U22) | none: no rhythm output |
+| Test register [13] | **provisional**: the VRC7's account (T4) | documented, tier 3 |
+| State after reset [14] | **provisional** (T5) | registers, tremolo cleared; vibrato kept: tier 3 |
+| Write timing inside a sample [3.4] | **provisional** (T7) | as left |
+
+## Layout
+
+- `src/ym2413_python/`: `opll.py` (the chip), `tables.py` (ROMs and tables, each
+  with its source), `variants.py` (the two parts as data).
+- `tests/`: `test_contract.py` (rung 0), `test_manual.py` (rung 1, Yamaha),
+  `test_measured.py` (rung 2a, the openMSX measurements), `test_community.py`
+  (rung 3), `test_provisional.py` (the decisions).
+- `validation/`: `streams.py` (synthetic register streams: test inputs, not a
+  model), `faults.py`, `closed_box.py` and `nuked_harness.c` (rung 6).
+- `scripts/fetch_references.py`: fetches and verifies the pinned references into
+  the git-ignored `reference/`. Nuked-OPLL is fetched for the closed box only;
+  its `opll.c` is compiled and never opened.
+- `docs/build-status.md`: where the work stands, what was not read and why, and
+  every slip from the rules.
+
+```sh
+python -m pytest                       # all rungs
+python validation/faults.py            # can each rung fail?
+python validation/closed_box.py        # the closed-box comparison (needs a C compiler)
+```
+
+## Licence
+
+MIT. `variants.py` also carries emu2413's MIT notice, for its instrument table
+used as data (T1, T3, U22).

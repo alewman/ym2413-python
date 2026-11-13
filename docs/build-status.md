@@ -120,13 +120,17 @@ The main finding: wherever a modulator sounds, the model's carrier runs about a
 sample ahead of the core's, which keeps S4's measured lag (T11, C7). Plain sines
 and vibrato agree on every slot.
 
+## Faults and documents (second session, 2026-11-13)
+
+- `validation/faults.py`: 30 faults, all caught; about 4 minutes on this
+  machine (the brief asked for under two; four workers, heavily loaded host).
+- `README.md`, `docs/claims.md`, `docs/api.md` written; `docs/validation.md`
+  gained a status table and the rung 6 results.
+
 ## Not started
 
 - Rung 2b (S4's capture files in place), rung 5 (emu2413 as a detector).
   Further one-register experiments on the closed box for finding O6.
-- `validation/faults.py`.
-- `README.md` (still the Phase 0 text), `docs/claims.md`, the update of
-  `docs/validation.md`, `docs/api.md` (T6's integer outputs and `trace`).
 - What sms-python and famicom-python must change.
 
 ## Not read, and why
@@ -181,6 +185,6 @@ All of these are also in `provenance-audit.md` except 5 and 6.
    sn76489-python's; feed `validation/streams.py`. Record differences as open;
    do not open the source, do not tune.
 5. Rung 5 with emu2413 if brief; rung 2b if the capture format is clear.
-6. `validation/faults.py` after sn76489-python's, under two minutes.
-7. README, `docs/claims.md`, `docs/validation.md`, `docs/api.md`.
+6. Done (30 faults, all caught).
+7. Done.
 8. Final commit; never push.
