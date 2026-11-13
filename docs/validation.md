@@ -1,4 +1,27 @@
-# Validation ladder (proposed)
+# Validation ladder
+
+**Where it stands, 2026-11-13** (detail in [build-status.md](build-status.md)):
+
+| Rung | Judge | State |
+|---|---|---|
+| 0 | the API contract | passes (24 tests) |
+| 1 | Yamaha's manual (S1) | passes (229 tests) |
+| 2a | the openMSX project's measurements, as written up | passes (192 tests) |
+| 2b | its capture files, sample for sample | not done: the format is unknown (U18) |
+| 3 | the NESdev wiki and SMS Power | passes (50 tests, one an expected failure: an open difference) |
+| 4 | console recordings | none exist |
+| 5 | emu2413 and ymfm as detectors | not run |
+| 6 | Nuked-OPLL as a closed box | run; findings O1 to O7 open (below) |
+| 7 | the boards | not adopted yet |
+
+`validation/faults.py`: 30 faults, every one caught (rung 0 catches 6, rung 1
+17, rung 2a 24, rung 3 10, the provisional record 13). Some faults in the list
+just below were not used because the code has no such switch (stepping the noise
+once a sample, SL 15 as the bottom); the 30 used are in the script.
+
+The text below is the ladder as proposed on 2026-11-12, kept as written, with
+the closed box's results added under rung 6.
+
 
 Written 2026-11-12 for the build that follows Phase 0. The rungs are ordered by how
 far their judge can be trusted, the best first. A lower rung never overrules a
