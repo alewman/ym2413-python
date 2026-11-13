@@ -29,9 +29,22 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
    how close it came. Not every core will be die-exact, and that is fine.
 7. **An author who objects to AI use of their work is left out**, even where the
    licence would allow it.
-8. **Undecided, so off limits for now**: building and running a Nuked model as a
-   closed-box referee (compare outputs, never read source). Do not fetch one
-   until the owner says so.
+8. **A reference model may be run, never read** (the owner, 2026-11-12: "to run
+   it through some harness so we could see what it does, not to copy its
+   code"). A Nuked model, or any other GPL or LGPL emulator, may be fetched into
+   the git-ignored `reference/`, built, and driven by a small harness written
+   here, so that its outputs can be compared with ours. The conditions:
+   - the harness uses the model's public header for the calls it must make and
+     nothing else; the model's `.c` files are not opened, searched or quoted;
+   - the harness is the only code that touches the model, lives in
+     `validation/`, and nothing built from the model is committed or shipped;
+   - a model is a **detector**: a difference says where to look. When a
+     comparison fails, the answer is sought in the documents, the recordings and
+     further measurements of the model's outputs. Opening the model's source to
+     see why is the one thing that turns a referee back into a blueprint, and
+     it is not done. If nothing else settles it, the difference is written down
+     as open;
+   - the README says which models were run and that their code was not read.
 
 ## The order of work
 
