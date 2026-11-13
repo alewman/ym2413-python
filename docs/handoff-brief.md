@@ -261,3 +261,15 @@ provisional.
 | P7 | No hardware. Noted. |
 | P8 | No code from emu2413. Its instrument table may be used as data under rule 11: marked hand-tuned, not a dump, emulator tier, with its MIT notice. |
 | P9 | Nothing is posted. |
+
+## Amended by the provenance audit (2026-11-13)
+
+[provenance-audit.md](provenance-audit.md) changed the source, not the value, of
+two technical defaults:
+
+- **T3** (vibrato below the top pitch range): the default is emu2413's table (MIT),
+  emulator tier. "The shape S4 describes" was S4 describing a table copied from a
+  GPL emulator.
+- **T8** (the percussion phase bit): the default is emu2413's form, which is the
+  first of S4's sixteen, with emu2413's four hi-hat phases. S4's own pick and the
+  constants that go with it are printed only in code blocks, which stay closed.

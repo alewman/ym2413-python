@@ -4,6 +4,13 @@ Written 2026-11-12 from the sources in [phase0.md](phase0.md), in this
 repository's own words. Source IDs (S1, S4, ...) are that document's. No statement
 here comes from a GPL or LGPL program or from the withdrawn core.
 
+**Audited 2026-11-13** before the core was written: every statement was checked
+against the prose of its source, and its chain (source, author, how established,
+what is upstream) is in [provenance-audit.md](provenance-audit.md). Statements the
+audit struck or changed say so below ("audit:"). Where a number's only support
+was a code fragment or a table copied from a GPL program, it is no longer stated
+as measured: it is an unknown with a named, emulator-tier default.
+
 Each statement carries one of three marks:
 
 - **documented**: a manufacturer's or community document says so. The source's tier
@@ -142,7 +149,10 @@ top cymbal's.
 5. **The DS1001's 15 instruments: documented, from a read-out of the chip** (S6,
    "dumped using the VRC7 rewired into a debug mode"; S12 prints the same bytes). The
    table is in S6 and is not repeated here; the build session takes it from the
-   pinned wiki file and cites it.
+   pinned wiki file and cites it. *Audit:* the chain is S6, which cites the
+   decapping site's page `vendor:yamaha:opl2` (not readable from here: HTTP 403);
+   S6 does not name who made the read-out; S12's comment credits "VRC7 presets ...
+   by Nuke.YKT". The bytes are Konami's ROM and are taken from the wiki (rule 11).
 6. **The percussion settings.** S4 found, on a real YM2413, user-tone bytes that
    reproduce the bass drum ($01 $01 $18 $0F $DF $F8 $6A $6D, "gave the best result"
    among many tried) and, for the four single-operator sounds, the bytes that matter:
@@ -173,9 +183,11 @@ attenuation added to it, and an exponential look-up.
    1024) (values 0 to 1018). Same sources and standing as 6.3.
 5. **From attenuation to a number.** Let x be the logarithmic value (the sine entry
    plus the attenuation of 6.7), a number with 8 fractional bits. Take the table
-   entry at 255 minus the low 8 bits of x, add 1024, double it, and shift it right by
-   the integer part of x. That gives a magnitude of at most 4,095 (12 bits).
-   **measured** (S4 `tab.txt`, refined in `mod-car.txt`).
+   entry at 255 minus the low 8 bits of x, add 1024 (the bit the ROM leaves out),
+   and shift it right by the integer part of x. Call the result v: at most 2,042,
+   11 bits. **measured** (S4 `tab.txt`, refined in `mod-car.txt`). *Audit:* S4's
+   prose counts dropped bits from a 12-bit form, which is 2v; 6.10 and 6.11 are
+   stated on that form and come to v >> 3 and v.
 6. Negative values are the bit-inverse of positive ones, so there are two zeros, +0
    and -0. **measured** (S4 `20150305.txt`: two centre peaks in the DAC histogram
    closer together than any other pair; `tab.txt`).
@@ -201,16 +213,28 @@ attenuation added to it, and an exponential look-up.
     ±2,047), and the carrier's phase is advanced by twice that value, in steps of
     1/1024 period: at TL 0 the swing is about ±8π. **measured** (S4 `mod-car.txt`:
     with this "the graph matches exactly with the measured data ... for all values"
-    of TL, apart from noise and the first samples after key-on).
+    of TL, apart from noise and the first samples after key-on). *Audit:* the
+    factor of two is what S4's two prose figures require together (a full-scale
+    modulator of ±2,047 giving ±8π); how a negative value rounds is U24, taken as
+    the one's complement of 6.6 first, then doubled.
 12. **Feedback.** The modulator's phase is advanced by the sum of its own two
     previous outputs (in the form of 6.11) shifted right by 8 - FB; FB = 0 means
     none. **measured** (S4 `fb.txt`: "This model can exactly predict the measured
     data", including chaotic waveforms at TL 0, FB 7, once the two remembered
     outputs have settled). S1 Table III-6 gives the same doubling series as
-    modulation indices π/16 to 4π. **documented**.
+    modulation indices π/16 to 4π. **documented**. *Audit:* the form (two
+    previous outputs, summed) is S4's and measured; the shift amount is in S4 only
+    as code and is taken instead from S1's table: 4π for a full-scale modulator at
+    FB 7 is a shift of 1, and each step down halves it. The shift of a negative
+    sum is U24.
 13. In S4's captures the modulator's phase is one sample behind the carrier's.
     **measured**, but it may be a property of how slots are ordered and not a
-    separate rule; one emulator removed such a delay (C7).
+    separate rule; one emulator removed such a delay (C7). *Audit:* the prose
+    gives the observation (fifteen equal samples, then one other, with both
+    operators stepping every sixteenth sample) and that a model with the two "1
+    sample out of phase" reproduces it. Which is behind is not in the prose. Taken
+    (T11, provisional): the carrier is modulated by the modulator's output of the
+    previous sample.
 14. The two remembered modulator outputs at key-on are not known to be cleared (S4:
     "this might be different from the actual start values"). **unsettled** (U21).
 
@@ -238,11 +262,16 @@ attenuation added to it, and an exponential look-up.
    samples, pattern repeating every 8,192). S1 says 6.4 Hz (C2).
 8. With vibrato on, the step is (((2 × F-number + d) × M) << block) >> 2, where d
    depends on the position and on the F-number's top three bits. For top bits 111
-   the eight values of d are 0, +3, +7, +3, 0, -3, -7, -3. **measured** (S4: "I only
-   verified the last row in the table"). For the other seven values of the top bits:
-   **unsettled** (U4). S4's description is that the peak value is the top three bits
-   themselves and the half-way value is that shifted right once; S12 carries a table
-   of the same shape.
+   the eight values of d are 0, +3, +7, +3, 0, -3, -7, -3. **measured,
+   approximately** (S4: "I only verified the last row in the table", by aligning
+   generated sines with the capture region by region; "not an exact match").
+   *Audit:* the table S4 checked against is one he says he copied from a GPL
+   emulator; it was not transcribed. The eight values above are the last row of
+   S12's table (MIT), and they reproduce the step sizes S4 states for F-number
+   $1C0, block 6. For the other seven values of the top bits: **struck as
+   measured; unsettled** (U4). Provisional default, emulator tier: S12's table,
+   whose peak is the top three bits and whose half-way value is that shifted right
+   once. S12 calls it a "rough approximation of 14 cents depth".
 9. The depth is about 14 cents at its peak. **documented** only for other Yamaha
    chips (S4 quoting their manuals); S1 gives none.
 10. **Phase reset.** Both of a channel's phase counters are set to zero when the
@@ -306,7 +335,9 @@ attenuation added to it, and an exponential look-up.
    | 59 | twelve of ½, then four of 1 |
 
    S4 notes that this is coarser than the patterns of 8.5 would give and that the
-   table says what happens, not how the chip does it.
+   table says what happens, not how the chip does it. *Audit:* S4 prints each
+   cycle from an arbitrary start. Where a cycle sits against the shared counter is
+   a choice (U23).
 8. Rates 60 to 63 rise by 2 every sample. **measured** (S4). S1 prints 1.27 ms for
    all four, which is 63 samples.
 9. Total times: S1 Table III-7 lists the 0 to 48 dB time for every rate; they equal
@@ -329,10 +360,12 @@ attenuation added to it, and an exponential look-up.
     52 uses n = 3, 56 uses n = 2. The rates between alternate over 16 samples between
     the formula of the rate group and the next faster one (n one less): for rate & 3
     = 1, 2, 3 the faster formula is used for 4 samples of 16, 8 of 16 (4 on, 4
-    off), and 12 of 16. **measured** (S4 `attack.txt` section 2.6; S4's closing
-    model selects by the counter's bits 1 and 2 through the pattern table of 8.5.
-    The exact alignment is to be confirmed in the build against the stated 4/12,
-    4/4, 12/4 counts).
+    off), and 12 of 16. **measured** (S4 `attack.txt` section 2.6, with the worked
+    example 21, 15, 13 at rate 55; S1 Table III-7's attack times for rates 48, 52,
+    56 and 59 are 42, 25, 14 and 7 samples, which these formulas give). *Audit:*
+    S4's prose says the pattern table of 8.5 is used at its even columns; which
+    bits of the shared counter choose the column is in lines that were not read.
+    Taken as a choice (U23): counter bits 2 and 3.
 13. Rates 60 to 63 are instant, but only as a decision made when damp ends: the
     level is set to 0 and the operator goes straight to decay. If AR is changed to
     15 (or to 0) while an attack is in progress, the attack stalls until the rate
@@ -412,11 +445,12 @@ attenuation added to it, and an exponential look-up.
 1. Tremolo adds 0 to 13 envelope steps to the attenuation of every operator whose
    AM bit is set (0 to 4.875 dB). **measured** (S4 `am.txt`: "(only) 14 different
    levels (0..13)"; about 4.8 to 5 dB at the pins).
-2. The added value is a triangle that moves once every 64 samples through 210
-   positions: 13,440 samples, 3.699 Hz. **measured** by its segment lengths (S4): at
-   0 for 960 samples (15 × 64), at each of 1 to 12 for 512 samples on the way up and
-   again on the way down, at 13 for 192 samples (3 × 64). S1 says 3.7 Hz.
-   **documented**.
+2. The added value is a triangle: at 0 for 960 samples (15 × 64), at each of 1 to
+   12 for 512 samples on the way up and again on the way down, at 13 for 192
+   samples (3 × 64). **measured** (S4 `am.txt`, the three durations). That makes
+   13,440 samples, 3.699 Hz; S1 says 3.7 Hz. **documented**. *Audit:* restated
+   from the measurement alone. S4 arrives at it through a 210-entry table that
+   "all emulation cores" use; the table was not read and is not needed.
 3. The tremolo position is one counter for the whole chip. **documented** by S1's
    block diagram (one "Vibrato / Amplitude Modulator" block). Its relation to the
    envelope counter and to reset: U15.
@@ -470,15 +504,24 @@ attenuation added to it, and an exponential look-up.
    the phase-counter"; which bit of which counter is meant is U5.
 9. The **top cymbal** outputs a positive or negative peak according to one bit
    computed from five phase bits: two of C8's (S4's "c85", "c83") and three of M7's
-   ("m77", "m73", "m72"). S4's chosen form is (c85 xor c83) and (m77 xor m72) and
-   (c85 xor m73), with the caveat that 16 forms fit the captures equally (each of
-   the three terms may be inverted, and the last term has a variant). **measured**
-   up to that ambiguity (U5). Its peak is the full ±255. **measured** (S4: "I
-   clearly see the maximum TCY amplitude going all the way to -255").
-10. The **hi-hat** combines that same bit p with the noise bit to choose one of four
-    fixed phases (in 1/1024 periods): noise 1 and p: $0D0; noise 1 and not p: $234;
-    noise 0 and p: $034; noise 0 and not p: $2D0. **measured** (S4, in the form that
-    goes with its choice in 11.9).
+   ("m77", "m73", "m72"). Sixteen forms fit the captures equally (each of three
+   terms may be inverted, and the last term has a variant). **measured** up to
+   that ambiguity (U5). Its peak is the full ±255. **measured** (S4: "at the end
+   of the attack phase the signal does span the full -255..+255 range").
+   *Audit:* what S4's names mean, and which value of the bit gives which sign, are
+   only in code blocks. **Struck.** Provisional default, emulator tier (S12): the
+   form (c85 = c83) and (m77 = m72) and (c85 = m73), the first of S4's sixteen,
+   read on bits 5 and 3 of C8's ten-bit phase and bits 7, 3 and 2 of M7's;
+   positive peak when it is true, negative when false.
+10. The **hi-hat** combines that same bit p with the noise bit, "in a very similar
+    way as is done for" the snare (S4, prose). **measured** that far. *Audit:* the
+    four phases are printed only in a code block. **Struck as measured; unsettled
+    (U22).** Provisional default, emulator tier (S12): one of four fixed phases (in
+    1/1024 periods), noise 1 and p: $0D0; noise 0 and p: $034; noise 1 and not p:
+    $234; noise 0 and not p: $2D0, with p the form of 11.9. S12 itself pairs the
+    noise values the other way round, and also has its snare's noise the other way
+    round from the measured table of 11.8; the pairing here is S12's read through
+    that one inversion, so that one noise bit serves both sounds.
 11. Each percussion sound has its own envelope from the ROM settings (5.6) and its
     own volume nibble (section 4). **documented** (S1 section V-4) and **measured**
     as fits (S4). How TL, key scaling and the volume combine for the three
@@ -578,7 +621,9 @@ sequence of output words is the fact. See the hand-off brief, T6.
 - **U2.** The YM2413's test register.
 - **U3.** Internal state after reset and at power-on; how the noise register leaves
   zero.
-- **U4.** Vibrato offsets for F-number top bits 000 to 110.
+- **U4.** Vibrato offsets for F-number top bits 000 to 110 (default: emu2413's
+  table, emulator tier), and the exact step formula away from the one setting S4
+  checked.
 - **U5.** The percussion phase bit: which of 16 equivalent forms, and which bits of
   which counters S4's "c85", "m77", "phase(8)" denote (10-bit phase or 19-bit
   counter).
@@ -610,7 +655,17 @@ sequence of output words is the fact. See the hand-off brief, T6.
 - **U19.** The shared counter's width and whether the LFOs are taken from it.
 - **U20.** The exact sample of the phase reset and of the one-sample "spike" S4 saw
   at the end of every damp phase.
-- **U21.** The feedback history at key-on.
+- **U21.** The feedback history at key-on, and whether the measured one-sample
+  lag of 6.13 is the carrier using the modulator's previous output (taken) or a
+  phase offset.
+- **U22.** The hi-hat's four phases and their pairing with the noise bit and the
+  cymbal's bit (default: emu2413's, emulator tier, read as 11.10 says).
+- **U23.** For effective rates of 48 and up: which bits of the shared counter
+  choose the faster attack formula (8.12), and where the decay cycles of 8.7 sit
+  against the counter. Default: counter bits 2 and 3, the slow-rate rule continued.
+- **U24.** Rounding of negative modulator outputs when doubled into the carrier's
+  phase and when summed and shifted for feedback. Default: one's complement first,
+  then an arithmetic shift.
 
 ## 17. How exact can a core built from this be?
 
