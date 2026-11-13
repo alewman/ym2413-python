@@ -242,3 +242,22 @@ measurement on the chip gives $68 (C4). The NESdev forum bans AI-written posts.
 | T16 | Step size | the slot; whole samples in one pass when no write intervenes |
 | T17 | Rung 2b's file format (U18) | work it out from the files and S4's prose once P1 allows; do not open the tools' source to learn it |
 | T18 | Other OPLL-family chips | not built |
+
+## Decisions taken (2026-11-13)
+
+The owner chose the middle rule for second-hand facts and asked that every fact
+carry its provenance (restart.md rules 9 to 11). The policy questions above, as
+they now stand; technical questions T1 to T18 are taken at their defaults,
+provisional.
+
+| | Decision |
+| --- | --- |
+| P1 | The capture project's write-ups are a source under the middle rule: its measurements on a real chip are used and cited, with a note that the write-ups also quote code that was not used. Its C fragments and `.cc`/`.hh` files stay closed; the section of `rhythm.md` that quotes Nuked-OPLL stays closed; the three tables it says were copied from a GPL core are out unless established independently. Its data files may be compared against in place; nothing is copied into this repository. Nobody is contacted for now. |
+| P2 | Open: the decapping site's page needs a person with a browser. Until then the YM2413's voices have no dump. |
+| P3 | The DS1001's instrument bytes stand, as a chip's ROM read out of real hardware and published on the NESdev wiki (rule 11), with the chain cited including who made the read-out. Revisit if that author objects to AI use. |
+| P4 | Yamaha's sheets are cited and quoted a sentence at a time; no pages or figures are copied. |
+| P5 | Issue threads of GPL projects are not read. |
+| P6 | **Not allowed for now**: the closed box is a detector, not a measuring instrument. The owner has not ruled on recovering ROM contents from a model's outputs. |
+| P7 | No hardware. Noted. |
+| P8 | No code from emu2413. Its instrument table may be used as data under rule 11: marked hand-tuned, not a dump, emulator tier, with its MIT notice. |
+| P9 | Nothing is posted. |
