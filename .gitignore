@@ -18,3 +18,9 @@ reference/
 
 # Register streams exported from a board. Derived from ROMs: local only.
 validation/streams/
+
+# Things set aside instead of deleted, and what the detector harnesses build
+# or write (one links a GPL model: nothing built from it is committed).
+trash/
+validation/build/
+validation/out/
