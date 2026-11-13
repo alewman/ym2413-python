@@ -46,6 +46,33 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
      as open;
    - the README says which models were run and that their code was not read.
 
+9. **Provenance is the point** (the owner, 2026-11-13: "we need to cite where we
+   got all of our pieces of information"). Every fact the core relies on carries
+   its chain: the document or post, its author, how the fact was established
+   (manufacturer's statement, measurement on a real chip and by what method,
+   read-out, recording), and anything upstream of it that is known. A reader must
+   be able to follow any number in the code back to where it came from.
+10. **Second-hand facts: the middle rule.** A fact is usable when someone
+    established it on real hardware and says so in prose, whatever first
+    suggested it, including an emulator. So a researcher's "I measured this on
+    my console and it is X" is a source even where X was first seen in an
+    emulator's code; cite the researcher and note the history. What stays out:
+    - code fragments, wherever they appear (a forum post, a write-up, an issue
+      thread): stop reading at the code block; never transcribe one;
+    - tables that a source says were copied from a GPL or LGPL program, unless
+      the same values are established independently, in which case cite that;
+    - a fact whose only support is "an emulator does this": it may be used as a
+      provisional default, marked emulator-tier, with the emulator named, and
+      only from a permissively licensed emulator's own documentation or code.
+    If a source mixes measurement with quoted GPL code, take the measurement and
+    say in the provenance that the source also quotes code that was not used.
+11. **A chip's ROM contents are facts about the chip.** Bytes read out of real
+    hardware and published (for example the VRC7's instrument set on the NESdev
+    wiki, from the chip's debug mode) are usable with their full chain cited.
+    Values tuned by ear or by hand in an emulator are that emulator's work:
+    usable only from a permissive source, with its notice, and marked as not a
+    dump.
+
 ## The order of work
 
 1. **Phase 0**: find the sources and the judges. A document per chip listing
