@@ -220,6 +220,139 @@ either traced to a documented or measured statement (and fixed, on that
 statement's authority) or listed as open. The README says the model was run and
 its code was not read.
 
+### Results, 2026-11-13
+
+Run: Nuked-OPLL at commit `1269cf5` (Nuke.YKT, GPL-2.0; its repository has no
+README, so only `opll.h` and `LICENSE` were opened), compiled with
+`validation/nuked_harness.c` by `python validation/closed_box.py`. The model's
+`opll.c` was not opened, searched or quoted; the compiler's messages went to an
+unread log. **Nothing in the core was changed because of this rung, and no
+constant was fitted to the model's output.**
+
+How the harness turned out against the plan above: one `OPLL_Clock` call is one
+slot (measured: a sample's words repeat every 18 calls), so the comparison is per
+slot, not per clock; the output goes to standard output and is compared in
+memory; the header does expose the model's state structure (its field names were
+seen when the header was opened, as rule 8 allows) and the harness does not touch
+it.
+
+**Normalisations, each measured from the model's output only** (the script's
+docstring has the detail): the model writes a word as sign × (size + 1), so +0 is
+1 and -0 is -1, and it gives 0 in slots that carry no word; the core's word is
+mapped to that form. A plain sine keyed on agrees on every slot of both variants
+once the model's words are taken 40 slots later (the "phase frame"). A volume
+write instead lines up 4 slots later (the "register frame"). Both frames were
+run.
+
+**"Sized"** counts the slots that differ by more than which zero: the YM2413
+model also puts ±0 words on its rhythm pin outside rhythm mode where the core
+puts +0, and the DS1001 model rests at 0 where the YM2413 model rests at +0.
+Those differences are zero-only and are not listed below (U10).
+
+| Stream | Variant | Pin | Slots | Differ | Sized (phase frame) | Sized (register frame) |
+|---|---|---|---:|---:|---:|---:|
+| silence | YM2413 | melody | 8992 | 0 | 0 | 0 |
+| silence | YM2413 | rhythm | 8992 | 0 | 0 | 0 |
+| silence | DS1001 | melody | 8992 | 0 | 0 | 0 |
+| each_instrument | YM2413 | melody | 700312 | 28238 | 27783 | 28296 |
+| each_instrument | YM2413 | rhythm | 700312 | 20158 | 0 | 0 |
+| each_instrument | DS1001 | melody | 700312 | 32512 | 32236 | 32277 |
+| custom_instrument | YM2413 | melody | 363112 | 8665 | 7338 | 9299 |
+| custom_instrument | YM2413 | rhythm | 363112 | 7581 | 0 | 0 |
+| custom_instrument | DS1001 | melody | 363112 | 8665 | 7338 | 9299 |
+| feedback_and_half_sines | YM2413 | melody | 217240 | 6434 | 6419 | 7741 |
+| feedback_and_half_sines | YM2413 | rhythm | 217240 | 7507 | 0 | 0 |
+| feedback_and_half_sines | DS1001 | melody | 217240 | 6434 | 6419 | 7741 |
+| all_channels | YM2413 | melody | 127072 | 25326 | 25052 | 38432 |
+| all_channels | YM2413 | rhythm | 127072 | 34776 | 0 | 0 |
+| all_channels | DS1001 | melody | 127072 | 27969 | 27858 | 35598 |
+| rhythm | YM2413 | melody | 294112 | 72648 | 8484 | 7375 |
+| rhythm | YM2413 | rhythm | 294112 | 76575 | 67280 | 60003 |
+| rhythm | DS1001 | melody | 294112 | 4004 | 3998 | 4018 |
+| envelopes | YM2413 | melody | 948880 | 17195 | 15586 | 17050 |
+| envelopes | YM2413 | rhythm | 948880 | 16207 | 0 | 0 |
+| envelopes | DS1001 | melody | 948880 | 17195 | 15586 | 17050 |
+| vibrato_tremolo | YM2413 | melody | 369256 | 20305 | 20305 | 20139 |
+| vibrato_tremolo | YM2413 | rhythm | 369256 | 9534 | 0 | 0 |
+| vibrato_tremolo | DS1001 | melody | 369256 | 20305 | 20305 | 20139 |
+| test_register | YM2413 | melody | 137056 | 24359 | 24359 | 24322 |
+| test_register | YM2413 | rhythm | 137056 | 4141 | 0 | 0 |
+| test_register | DS1001 | melody | 137056 | 18047 | 18047 | 17835 |
+| fast_writes | YM2413 | melody | 41210 | 18666 | 6045 | 6040 |
+| fast_writes | YM2413 | rhythm | 41210 | 19401 | 13868 | 13858 |
+| fast_writes | DS1001 | melody | 41210 | 6462 | 5638 | 5635 |
+| multiples | YM2413 | melody | 193936 | 8769 | 8599 | 8340 |
+| multiples | YM2413 | rhythm | 193936 | 5467 | 0 | 0 |
+| multiples | DS1001 | melody | 193936 | 8769 | 8599 | 8340 |
+| rates | YM2413 | melody | 831760 | 18745 | 18086 | 18488 |
+| rates | YM2413 | rhythm | 831760 | 13043 | 0 | 0 |
+| rates | DS1001 | melody | 831760 | 18745 | 18086 | 18488 |
+| key_scaling | YM2413 | melody | 153712 | 8234 | 8233 | 8218 |
+| key_scaling | YM2413 | rhythm | 153712 | 4585 | 0 | 0 |
+| key_scaling | DS1001 | melody | 153712 | 8234 | 8233 | 8218 |
+| back_to_back | YM2413 | melody | 34615 | 644 | 619 | 634 |
+| back_to_back | YM2413 | rhythm | 34615 | 940 | 0 | 0 |
+| back_to_back | DS1001 | melody | 34615 | 1809 | 1795 | 1609 |
+| rhythm_toggles | YM2413 | melody | 32187 | 7355 | 2696 | 2608 |
+| rhythm_toggles | YM2413 | rhythm | 32187 | 8256 | 6637 | 6080 |
+| rhythm_toggles | DS1001 | melody | 32187 | 0 | 0 | 0 |
+| slow_envelope | YM2413 | melody | 5371552 | 271925 | 269169 | 321797 |
+| slow_envelope | YM2413 | rhythm | 5371552 | 241347 | 0 | 0 |
+| slow_envelope | DS1001 | melody | 5371552 | 275232 | 272508 | 409434 |
+| timer_rollover | YM2413 | melody | 10741720 | 461986 | 452873 | 446799 |
+| timer_rollover | YM2413 | rhythm | 10741720 | 282018 | 0 | 0 |
+| timer_rollover | DS1001 | melody | 10741720 | 461986 | 452873 | 446799 |
+| rhythm_key_races | YM2413 | melody | 186148 | 5574 | 3674 | 3674 |
+| rhythm_key_races | YM2413 | rhythm | 186148 | 34496 | 32262 | 32262 |
+| rhythm_key_races | DS1001 | melody | 186148 | 0 | 0 | 0 |
+| random_1 | YM2413 | melody | 159802 | 46959 | 18600 | 20375 |
+| random_1 | YM2413 | rhythm | 159802 | 40821 | 19232 | 14607 |
+| random_1 | DS1001 | melody | 159802 | 20897 | 19244 | 19689 |
+| random_2 | YM2413 | melody | 187990 | 80038 | 32897 | 36000 |
+| random_2 | YM2413 | rhythm | 187990 | 68762 | 33143 | 27701 |
+| random_2 | DS1001 | melody | 187990 | 34499 | 31750 | 32548 |
+
+**Single-feature probes** (YM2413, phase frame, one channel, F-number $123,
+block 4):
+
+| Probe | Carrier words differing |
+|---|---|
+| Plain sine | 0 |
+| Vibrato, carrier only (the pitch range's row is T3, emulator tier) | 0 |
+| Envelope, carrier only: attack, decay, sustain, release | 48 to 50 of ~12,000 |
+| Tremolo, carrier only | 15,906 of 20,000, from sample 511 on |
+| Modulator sounding (TL 16, or TL 63), with or without feedback | ~94 % |
+
+**Findings, all OPEN** (none is settled by a document or a measurement):
+
+- **O1. Modulation.** Wherever a modulator sounds, the model's carrier runs about
+  one sample ahead of the core's. The core keeps the one-sample lag S4 measured
+  (spec 6.13, T11, rung 2a's "15 then 1" test passes); C7 already records an
+  emulator that removed such a delay. This one difference accounts for most of
+  the table.
+- **O2. Key-on latency.** From a key-on write, the model's sound starts two
+  samples later than the core's (that is why the two frames differ). Spec U20
+  (the sample of the phase reset) and U9 (write timing).
+- **O3. Write deadline.** A write two slots before a channel's slot changes that
+  slot in the core (T7) and waits a sample in the model. U9.
+- **O4. Envelope step timing.** With a carrier alone, envelope steps fall one
+  sample apart now and then: the shared counter's phase against reset and the
+  choice of counter bits (U3, U19, U23).
+- **O5. Tremolo.** The tremolo's steps fall at other samples from sample 511 on:
+  the LFO's start position or its alignment with the counter (U15).
+- **O6. Test register and rhythm mode.** `test_register`, `rhythm`,
+  `rhythm_toggles` and `rhythm_key_races` differ in ways not yet separated from
+  O1 to O3; T4, T8 to T10 and U5 to U8 are all in play.
+- **O7. Built-in voices.** `each_instrument` differs on both variants. On the
+  DS1001 the voices are the chip's own ROM (rung 3), so its differences come from
+  O1 to O5, not the bytes. On the YM2413 the voices are emulator-tier data (T1);
+  per decision P6 the differences were **not** examined voice by voice and
+  nothing was inferred about the ROM.
+
+Not done here, and why: further one-register experiments on the closed box for
+O6; and any use of the model to choose among unsettled items, which needs the
+owner's word (P6).
+
 ## Rung 7: the boards
 
 sms-python's FM unit and famicom-python's mapper 85 adopt the core through api.md.
