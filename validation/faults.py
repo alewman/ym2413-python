@@ -92,7 +92,9 @@ def run_tests(package_parent: Path, check_import: bool = False) -> tuple[bool, s
     return result.returncode == 0, failed
 
 
-def make_copy(index: int, file: str = "", find: str = "", replacement: str = "", every=False) -> Path:
+def make_copy(
+    index: int, file: str = "", find: str = "", replacement: str = "", every=False
+) -> Path:
     parent = WORK / f"{index:02d}"
     target = parent / "ym2413_python"
     target.mkdir(parents=True, exist_ok=True)
@@ -119,7 +121,9 @@ def main() -> int:
         results = list(pool.map(run_tests, copies))
     caught = dict.fromkeys(RUNGS, 0)
     unnoticed = []
-    for index, ((what, *_), (passed, failed)) in enumerate(zip(FAULTS, results, strict=True), start=1):
+    for index, ((what, *_), (passed, failed)) in enumerate(
+        zip(FAULTS, results, strict=True), start=1
+    ):
         if not passed and not failed:
             failed = set(RUNGS)  # the suite could not even be collected
         for name in failed:
