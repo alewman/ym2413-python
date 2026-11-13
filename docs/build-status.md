@@ -93,11 +93,24 @@ wave looks exactly the same" may be a visual remark, or may count against T14
 Lint fixes were mechanical (`itertools.pairwise`, one `min`, the fetch script
 made executable, formatting).
 
+## Rungs 3 and the provisional record (second session, 2026-11-13)
+
+- `tests/test_community.py` (rung 3, every test tier 3): the DS1001's 15 voices
+  and 3 drum rows equal the pinned NESdev wiki table (parsed at test time from
+  famicom-python, skipped if absent); each ROM voice of both variants plays as
+  its row loaded as the user tone; six channels and no rhythm on the DS1001; the
+  reset bit (registers and tremolo cleared, vibrato kept); the four test bits;
+  the wiki's frequency formula; SMS Power's rhythm set-up plays all five sounds.
+  **One open difference, recorded as a strict xfail, not fixed:** S6 says test
+  bit 2 makes the output silent; with a sounding modulator the core's carrier is
+  moved by the modulator's output at phase 0, which is not zero (spec 6.3), so a
+  small word is heard. No document says how the chip avoids it.
+- `tests/test_provisional.py`: one labelled test for each of T1 to T15 and U20,
+  U22, U23, U24, pinning the default so that changing it is deliberate.
+- **514 tests pass, 1 xfailed** (the open item above). Lint clean.
+
 ## Not started
 
-- `tests/test_community.py` (rung 3: DS1001 voices against the pinned wiki file,
-  reset bit, test register, six channels).
-- `tests/test_provisional.py` (one labelled test per T1 to T15 and U22 to U24).
 - Rung 2b (S4's capture files in place), rung 5 (emu2413 as a detector), rung 6
   (Nuked-OPLL closed box: nothing fetched, no harness, `fetch_references.py`
   not extended). **No detector has been run; no constant was tuned to one.**
@@ -145,7 +158,7 @@ All of these are also in `provenance-audit.md` except 5 and 6.
 ## Next steps, in order
 
 1. Done (rung 2a triage above).
-2. Write `tests/test_community.py` and `tests/test_provisional.py`.
+2. Done (rung 3 and the provisional record above).
 3. Done; keep it clean.
 4. Extend `scripts/fetch_references.py` with a pinned Nuked-OPLL (header,
    LICENSE, README may be opened; `opll.c` never). Write
