@@ -69,18 +69,58 @@ class Pin:
 PINS: tuple[Pin, ...] = (
     # emu2413: MIT, Copyright (c) 2001-2019 Mitsutaka Okazaki (LICENSE and the
     # header of emu2413.c both read).
-    Pin("emu2413/LICENSE", f"{EMU2413}/LICENSE", "8fb093f26ed0d78c8ca033bbec7063ac5b34c5d2475e6bd121d03ccfaaf2355f"),
-    Pin("emu2413/README.md", f"{EMU2413}/README.md", "79b34ffc2e0112659cfeb69eb6b623a3d726213a34479faf5bfe2d93f71c6903"),
-    Pin("emu2413/emu2413.c", f"{EMU2413}/emu2413.c", "35d492c180320bd473ece0fddca771ef54d9b25884a094468560f865f540abe5"),
-    Pin("emu2413/emu2413.h", f"{EMU2413}/emu2413.h", "24d132a37fbc28426d24db90954f723b477d37277aae03db77c7dac8c4a637e3"),
+    Pin(
+        "emu2413/LICENSE",
+        f"{EMU2413}/LICENSE",
+        "8fb093f26ed0d78c8ca033bbec7063ac5b34c5d2475e6bd121d03ccfaaf2355f",
+    ),
+    Pin(
+        "emu2413/README.md",
+        f"{EMU2413}/README.md",
+        "79b34ffc2e0112659cfeb69eb6b623a3d726213a34479faf5bfe2d93f71c6903",
+    ),
+    Pin(
+        "emu2413/emu2413.c",
+        f"{EMU2413}/emu2413.c",
+        "35d492c180320bd473ece0fddca771ef54d9b25884a094468560f865f540abe5",
+    ),
+    Pin(
+        "emu2413/emu2413.h",
+        f"{EMU2413}/emu2413.h",
+        "24d132a37fbc28426d24db90954f723b477d37277aae03db77c7dac8c4a637e3",
+    ),
     # ymfm: BSD-3-Clause, Copyright (c) 2021, Aaron Giles (LICENSE and each file's
     # header read). The OPL family files and the shared FM engine they use.
-    Pin("ymfm/LICENSE", f"{YMFM}/LICENSE", "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c"),
-    Pin("ymfm/README.md", f"{YMFM}/README.md", "85fa831f01bb266efe5384e56d0d1f921ca4275a4415ba0123c5226602a44a1a"),
-    Pin("ymfm/src/ymfm_opl.h", f"{YMFM}/src/ymfm_opl.h", "b01d13720c61cf040d10a2e68ee3e002e4467b9c795978514d58be6245dcbda5"),
-    Pin("ymfm/src/ymfm_opl.cpp", f"{YMFM}/src/ymfm_opl.cpp", "e745673678d0de9733488427397e794d42348bb000dd45f6665d6f063963d517"),
-    Pin("ymfm/src/ymfm_fm.h", f"{YMFM}/src/ymfm_fm.h", "1b27bfb7fa4963d7c54cb06fd9bf659450362d8ed496c6af7d487b068cac45c9"),
-    Pin("ymfm/src/ymfm_fm.ipp", f"{YMFM}/src/ymfm_fm.ipp", "4fb7fe59d4494a19e9f9c7888eb644a63d86e109fdefb27a8117bf6a5f6ab4b9"),
+    Pin(
+        "ymfm/LICENSE",
+        f"{YMFM}/LICENSE",
+        "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c",
+    ),
+    Pin(
+        "ymfm/README.md",
+        f"{YMFM}/README.md",
+        "85fa831f01bb266efe5384e56d0d1f921ca4275a4415ba0123c5226602a44a1a",
+    ),
+    Pin(
+        "ymfm/src/ymfm_opl.h",
+        f"{YMFM}/src/ymfm_opl.h",
+        "b01d13720c61cf040d10a2e68ee3e002e4467b9c795978514d58be6245dcbda5",
+    ),
+    Pin(
+        "ymfm/src/ymfm_opl.cpp",
+        f"{YMFM}/src/ymfm_opl.cpp",
+        "e745673678d0de9733488427397e794d42348bb000dd45f6665d6f063963d517",
+    ),
+    Pin(
+        "ymfm/src/ymfm_fm.h",
+        f"{YMFM}/src/ymfm_fm.h",
+        "1b27bfb7fa4963d7c54cb06fd9bf659450362d8ed496c6af7d487b068cac45c9",
+    ),
+    Pin(
+        "ymfm/src/ymfm_fm.ipp",
+        f"{YMFM}/src/ymfm_fm.ipp",
+        "4fb7fe59d4494a19e9f9c7888eb644a63d86e109fdefb27a8117bf6a5f6ab4b9",
+    ),
     # David Viens, "Copyright-free OPLL(x) ROM patches" (GitHub wiki page).
     Pin(
         "opll-patches/Copyright-free-OPLL(x)-ROM-patches.md",
@@ -92,67 +132,160 @@ PINS: tuple[Pin, ...] = (
 # Files cited in place. Checked by --local, never copied.
 LOCAL: tuple[tuple[Path, str], ...] = (
     # Yamaha, YM2413 application manual (30 pages, image only)
-    (Path("/data/emu/sms-python/reference/smspower/chipsym2413am.pdf"), "d5e4864a76ae538b80a910c56a32218919148adde1a7101aafdfd8eb63bcc656"),
+    (
+        Path("/data/emu/sms-python/reference/smspower/chipsym2413am.pdf"),
+        "d5e4864a76ae538b80a910c56a32218919148adde1a7101aafdfd8eb63bcc656",
+    ),
     # the same manual as 31 GIF pages
-    (Path("/data/emu/sms-python/reference/smspower/ym2413am.zip"), "605654dda8c33b89ce35bef69d66ffc61ff235a081e687ffe1db330408fceaf6"),
+    (
+        Path("/data/emu/sms-python/reference/smspower/ym2413am.zip"),
+        "605654dda8c33b89ce35bef69d66ffc61ff235a081e687ffe1db330408fceaf6",
+    ),
     # Yamaha, YM2413 catalog LSI-212413A2, 1996.6 (10 pages)
-    (Path("/data/emu/sms-python/reference/smspower/ym2413pdf.zip"), "564e137e1ce2076cdd29c510c34df82ac69fa289edf15acb1dadce585287d4ca"),
+    (
+        Path("/data/emu/sms-python/reference/smspower/ym2413pdf.zip"),
+        "564e137e1ce2076cdd29c510c34df82ac69fa289edf15acb1dadce585287d4ca",
+    ),
     # SMS Power wiki, YM2413
-    (Path("/data/emu/sms-python/reference/smspower-wiki/YM2413.pmwiki"), "d66a48f206db44b56a51430a259f50f70b38734755ba5e36a6acf1540eef874d"),
+    (
+        Path("/data/emu/sms-python/reference/smspower-wiki/YM2413.pmwiki"),
+        "d66a48f206db44b56a51430a259f50f70b38734755ba5e36a6acf1540eef874d",
+    ),
     # SMS Power wiki, audio control port
-    (Path("/data/emu/sms-python/reference/smspower-wiki/AudioControlPort.pmwiki"), "01554535fab750624c15f1a0661363147268a3833bac1b416bbf1b4de3bcd2b1"),
+    (
+        Path("/data/emu/sms-python/reference/smspower-wiki/AudioControlPort.pmwiki"),
+        "01554535fab750624c15f1a0661363147268a3833bac1b416bbf1b4de3bcd2b1",
+    ),
     # SMS Power forum, YM2413 TestRom thread
-    (Path("/data/emu/sms-python/reference/smspower-forum/topic-20057.txt"), "5f4c70c932e5229d0e93565ef3b15c5f8607c017fd1aff7bb3b1f2255e109daf"),
+    (
+        Path("/data/emu/sms-python/reference/smspower-forum/topic-20057.txt"),
+        "5f4c70c932e5229d0e93565ef3b15c5f8607c017fd1aff7bb3b1f2255e109daf",
+    ),
     # JoppyFurr, YM2413 TestRom 1.00
-    (Path("/data/emu/sms-python/tests/test_roms/smspower/YM2413TestRom-SMS-1.00.zip"), "15b3f259cc96719219e5ebd539ce4fc757ad0979332623275cc954b085342d19"),
+    (
+        Path("/data/emu/sms-python/tests/test_roms/smspower/YM2413TestRom-SMS-1.00.zip"),
+        "15b3f259cc96719219e5ebd539ce4fc757ad0979332623275cc954b085342d19",
+    ),
     # NESdev wiki, VRC7 audio
-    (Path("/data/emu/famicom-python/reference/nesdev-wiki/VRC7_audio.wiki"), "1e48625aa57d63e44b4b818e8e2305f9478d0ed99b4db176cf422d09e4b3f35f"),
+    (
+        Path("/data/emu/famicom-python/reference/nesdev-wiki/VRC7_audio.wiki"),
+        "1e48625aa57d63e44b4b818e8e2305f9478d0ed99b4db176cf422d09e4b3f35f",
+    ),
     # NESdev forum, VRC7 and 5B amplifier investigation
-    (Path("/data/emu/famicom-python/reference/nesdev-forum/17745.html"), "f913c22f7e139761b76b40f3e484fa3255bed06d961534cc34f155d3ce3ead37"),
+    (
+        Path("/data/emu/famicom-python/reference/nesdev-forum/17745.html"),
+        "f913c22f7e139761b76b40f3e484fa3255bed06d961534cc34f155d3ce3ead37",
+    ),
     # Yamaha, YM2413B catalog LSI-212413B2, 1999.5 (10 pages)
-    (Path("/data/emu/sms-python/reference/src/ym2413/doc/YM2413B(-F).pdf"), "c8a6a15a6c976358071e60be952505d77001118f9b677149a0ad904fe7458b90"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/doc/YM2413B(-F).pdf"),
+        "c8a6a15a6c976358071e60be952505d77001118f9b677149a0ad904fe7458b90",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150209.txt"), "03c175d317cb85962da444afe9babffd1728d6fe4d0d3aee3fa9441c5e747ee6"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150209.txt"),
+        "03c175d317cb85962da444afe9babffd1728d6fe4d0d3aee3fa9441c5e747ee6",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150305.txt"), "aa0263b80c5dba962014f8b6911cab3f47f84b4ef593ebe046024e4416e2a27d"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150305.txt"),
+        "aa0263b80c5dba962014f8b6911cab3f47f84b4ef593ebe046024e4416e2a27d",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150311.txt"), "b28943372b34b295ab7b50558b134428b815e90934c25bf4e28ce87ea76912ca"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150311.txt"),
+        "b28943372b34b295ab7b50558b134428b815e90934c25bf4e28ce87ea76912ca",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150316.txt"), "e0c348e1458f782a1fd4641cdc6797b8ea30effc2644f4e825f22d4143197a5d"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150316.txt"),
+        "e0c348e1458f782a1fd4641cdc6797b8ea30effc2644f4e825f22d4143197a5d",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150320.txt"), "f63cd6565cc3bb1024baaeea9c070e5f55d71e9ae34ebe23c53ad26e0adc8e7f"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150320.txt"),
+        "f63cd6565cc3bb1024baaeea9c070e5f55d71e9ae34ebe23c53ad26e0adc8e7f",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150327/attack-rates.txt"), "09fdcd714a0f487c4e79285a818c1851b65facc26c4e7862c49374acf6e47e22"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150327/attack-rates.txt"),
+        "09fdcd714a0f487c4e79285a818c1851b65facc26c4e7862c49374acf6e47e22",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150409/tab.txt"), "24113f9cd423913d4819e7b32ca2c872b9b10c3b3da89ab6b797e3b3bca698ca"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150409/tab.txt"),
+        "24113f9cd423913d4819e7b32ca2c872b9b10c3b3da89ab6b797e3b3bca698ca",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20150409/predicted-sine.txt"), "4a51f9346022c90980ba83d9bad3a00cc002cf512b0a1fef015d98052de82d3d"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20150409/predicted-sine.txt"),
+        "4a51f9346022c90980ba83d9bad3a00cc002cf512b0a1fef015d98052de82d3d",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151128/am.txt"), "4578fc0335c0ae80599dd29445e7bc50f29239d5e8ea9dca3e1cb633a5976256"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151128/am.txt"),
+        "4578fc0335c0ae80599dd29445e7bc50f29239d5e8ea9dca3e1cb633a5976256",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151201.txt"), "6a202ee16596cfb8a1c67daa16dce4bff42f19447d942784786221d519ccd9fd"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151201.txt"),
+        "6a202ee16596cfb8a1c67daa16dce4bff42f19447d942784786221d519ccd9fd",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151203/mod-car.txt"), "e654af4414bc5d1f9beaaff30bbc1fc239ba0698a581a66cde1826e22fc4b6d9"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151203/mod-car.txt"),
+        "e654af4414bc5d1f9beaaff30bbc1fc239ba0698a581a66cde1826e22fc4b6d9",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151212/fb.txt"), "840791a10206fd91857662b1eb9e008ac415e559bd4eb88693b98807ac3c4c2c"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151212/fb.txt"),
+        "840791a10206fd91857662b1eb9e008ac415e559bd4eb88693b98807ac3c4c2c",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151216/ksl.txt"), "559e668316c6a6ab6d56a4accdf598864234532964e1ee8166f38d99ab61f4c6"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151216/ksl.txt"),
+        "559e668316c6a6ab6d56a4accdf598864234532964e1ee8166f38d99ab61f4c6",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151224/sl-ksr.txt"), "90507d06eeb1b2a7f205bb3d43b2a552bf88779931c207220ae2396ef9581588"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151224/sl-ksr.txt"),
+        "90507d06eeb1b2a7f205bb3d43b2a552bf88779931c207220ae2396ef9581588",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20151231/envelope.txt"), "9a0840b2be45c3b96419d7f830fb7ca2db013b60c36ce55dae716a06887b9a86"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20151231/envelope.txt"),
+        "9a0840b2be45c3b96419d7f830fb7ca2db013b60c36ce55dae716a06887b9a86",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20160210/adsr-transitions.txt"), "1f90b721f259590344acb68f87aaf1133370a7a848d32c8edbfd1820b79e68c3"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20160210/adsr-transitions.txt"),
+        "1f90b721f259590344acb68f87aaf1133370a7a848d32c8edbfd1820b79e68c3",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20160716/small-signals.txt"), "6114bf7aeac15968ec61cbe3706536e09ce0f55d452a0ee523ef2b26b0d733c6"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20160716/small-signals.txt"),
+        "6114bf7aeac15968ec61cbe3706536e09ce0f55d452a0ee523ef2b26b0d733c6",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20170126/attack.txt"), "141099a9f2e5f1853aff31708f0589e7f9c469a45612a2442060857d66eecf80"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20170126/attack.txt"),
+        "141099a9f2e5f1853aff31708f0589e7f9c469a45612a2442060857d66eecf80",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/20170126/formula-f1-4.txt"), "1635c3f068a97414b9c6bfb50ee5aba3988d6d5b3e4d6fb70e5ee4fe0fed4570"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/20170126/formula-f1-4.txt"),
+        "1635c3f068a97414b9c6bfb50ee5aba3988d6d5b3e4d6fb70e5ee4fe0fed4570",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/lfsr/lfsr.txt"), "a4ca471829546c90609ceb94ff97e1865c1d08ee1feb94e84b9a36de723e3c2e"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/lfsr/lfsr.txt"),
+        "a4ca471829546c90609ceb94ff97e1865c1d08ee1feb94e84b9a36de723e3c2e",
+    ),
     # capture project write-up
-    (Path("/data/emu/sms-python/reference/src/ym2413/results/rhythm/rhythm.md"), "0a5d0a2458a7fae67acaaed46c91837633894edd4a7fc47e1b3f9aea80cb86b3"),
+    (
+        Path("/data/emu/sms-python/reference/src/ym2413/results/rhythm/rhythm.md"),
+        "0a5d0a2458a7fae67acaaed46c91837633894edd4a7fc47e1b3f9aea80cb86b3",
+    ),
 )
 
 

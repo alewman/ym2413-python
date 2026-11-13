@@ -184,7 +184,7 @@ def fast_writes() -> tuple[list, int]:
 def random_soup(seed: int) -> tuple[list, int]:
     w = Writer()
     rng = random.Random(seed)
-    registers = [*range(0x00, 0x08), 0x0E]
+    registers = [*range(0x08), 0x0E]
     registers += [*range(0x10, 0x19), *range(0x20, 0x29), *range(0x30, 0x39)]
     for _ in range(400):
         w.reg(rng.choice(registers), rng.randrange(256))

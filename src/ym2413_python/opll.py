@@ -436,6 +436,13 @@ class OPLL:
         counter = self.counter
         variant = self.variant
 
+        if not SLOT_IS_CARRIER[operator] and not (self.rhythm_mode and channel >= 7):
+            # Spec 7.10: the carrier's damp ends this sample (keyed, in damp, at
+            # 124 or more), so this channel's phases restart together.
+            carrier = CARRIER_SLOT[channel]
+            if self.key[carrier] and self.state[carrier] == DAMP and self.level[carrier] >= QUIET:
+                self.phase[operator] = 0
+
         if not self.key[operator] and self.releases[operator]:
             # Spec 8.22 (measured and documented): release is "the key is off",
             # whatever state the operator was in. Spec 8.24: it runs to 127.
@@ -453,10 +460,23 @@ class OPLL:
         state = self.state[operator]
         if state == DAMP:
             if level >= QUIET:
-                # Spec 8.17 (measured): damp ends at 124, not 127; spec 7.10: the
-                # phase is set to zero then. CHOICE (U20): each operator resets
-                # its own phase when its own damp ends.
-                self.phase[operator] = 0
+                # Spec 8.17 (measured): damp ends at 124, not 127. Spec 7.10
+                # (measured): "both of a channel's phase counters are set to zero
+                # when the envelope leaves the damp state". The envelope S4 saw
+                # is the carrier's, so the carrier's damp end resets both; a
+                # modulator's own damp end resets nothing, since a modulator held
+                # through key-off (spec 8.23) damps from a low level and would
+                # otherwise restart out of step with its carrier, against S4's
+                # "each time the same note is played, the wave looks exactly the
+                # same". CHOICE (U20): the reset belongs to the sample in which
+                # the carrier's damp ends, before either operator steps; the
+                # modulator's slot comes first, so it resets its own phase when
+                # it sees the carrier about to end damp (see the top of this
+                # method). The single-operator percussion sounds (hi-hat, tom,
+                # snare, cymbal) have their own keys and each resets only its
+                # own phase.
+                if SLOT_IS_CARRIER[operator] or (self.rhythm_mode and channel >= 7):
+                    self.phase[operator] = 0
                 rate = self._effective_rate(operator, channel, self.attack_rate[operator])
                 if rate >= 60:
                     # Spec 8.13 (measured): the instant attack is decided here.
@@ -548,8 +568,7 @@ class OPLL:
         )
         if self.tremolo_on[operator]:
             attenuation += self.tremolo  # spec 10.1 (measured)
-        if attenuation > BOTTOM:
-            attenuation = BOTTOM
+        attenuation = min(attenuation, BOTTOM)
 
         # Spec 6.5 (measured): each envelope step is 16 units of the logarithm.
         x = LOG_SIN[index] + (attenuation << 4)

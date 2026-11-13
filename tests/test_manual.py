@@ -9,6 +9,7 @@ the page images and typed here.
 
 from __future__ import annotations
 
+import itertools
 import math
 
 import pytest
@@ -159,6 +160,7 @@ KSL_ROW = (0.0, 9.0, 12.0, 13.875, 15.0, 16.125, 16.875, 17.625,
 def modulator_peak(ksl: int, total_level: int, f_top: int, block: int) -> int:
     """The largest output of a modulator at full envelope level."""
     f_number = f_top << 5 | 0x08
+
     # A multiplier that moves the phase a few table steps a sample, so that a
     # period is short and still passes close to the sine's top.
     def per_sample(m: int) -> float:
@@ -235,7 +237,9 @@ def test_table_iii_6_modulation_index(fb):
     tone = (0x21, 0x21, 0x00, fb, 0xF0, 0xF0, 0x00, 0x00)
     chip = tone_chip(tone, f_number=0x100, block=2)
     still = tone_chip((0x21, 0x21, 0x00, 0, 0xF0, 0xF0, 0x00, 0x00), f_number=0x100, block=2)
-    assert (attribute(chip, "previous", 0, 600) == attribute(still, "previous", 0, 600)) == (fb == 0)
+    assert (attribute(chip, "previous", 0, 600) == attribute(still, "previous", 0, 600)) == (
+        fb == 0
+    )
     if fb:
         swing = (2 * 2042) / 2 ** (8 - fb)  # the most the chip adds, in 1/1024 periods
         assert abs(swing * 2 * math.pi / 1024 - printed) / printed < 0.01
@@ -491,7 +495,7 @@ def test_table_iii_9_rhythm_slots_and_the_second_output(bit, slot):
         if rhythm_word not in (0, -1)
     }
     assert heard == {slot, copy}
-    for earlier, later in zip(trace, trace[1:], strict=False):
+    for earlier, later in itertools.pairwise(trace):
         assert later[copy][1] == earlier[slot][1]
     assert all(melody_word == 0 for sample in trace for melody_word, _ in sample)
 

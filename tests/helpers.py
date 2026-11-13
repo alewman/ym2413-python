@@ -12,6 +12,7 @@ chip's numbers instead of repeating its code.
 
 from __future__ import annotations
 
+import itertools
 import math
 from pathlib import Path
 
@@ -140,7 +141,7 @@ def runs(values) -> list[tuple[int, int]]:
 
 def rises(values) -> int:
     """Upward crossings of zero."""
-    return sum(1 for a, b in zip(values, values[1:], strict=False) if a <= 0 < b)
+    return sum(1 for a, b in itertools.pairwise(values) if a <= 0 < b)
 
 
 # A second writing of the operator's arithmetic, from the formulas of spec 6.3 to

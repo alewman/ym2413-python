@@ -34,28 +34,64 @@ Written for whoever continues, with no memory of the session assumed. Read
   recurrence S4's 120 printed snare bits satisfy; and the operator arithmetic
   gives S4's measured peak widths of 342 and 332 samples at levels 112 and 113.
 
-## Done but not checked
+## Rung 2a triage (second session, 2026-11-13)
 
-- **`tests/test_measured.py` (rung 2a): 159 pass, 32 fail** on its first and
-  only run. The failures have NOT been looked at. Some are surely faults of the
-  tests (the file was written in one go and contains leftover scaffolding:
-  `first_segments`, the muddled loop in `test_decay_step_lengths`, dead code in
-  `test_the_snare_table`). Some may be real faults of the core. Failing:
-  `test_feedback` (all six; two say `assert 6 == 0`: `previous` is not 0 after
-  the damp-end sample, so the helper's "nothing remembered" assumption is
-  wrong, and `test_modulator_into_carrier` passing suggests only feedback start
-  state differs), `test_every_half_period...`, `test_each_time_the_same_note...`,
-  four `test_flat_segment_lengths` rows with F-number 3, `test_decay_step_lengths[9]`,
-  the three `first_segment` tests (one raises StopIteration), the 124 attack
-  sequence, `test_attack_15_is_instant_only_when_damp_ends`,
-  `test_key_off...[decay]`, `test_a_modulator_has_no_release`,
-  `test_confirmed_effective_rates[...25]`, the bass-drum-equals-user-tone test,
-  the top-cymbal test, `test_aliases_of_the_channel_registers`.
-  **Do not tune the core to make them pass: for each, decide from the spec
-  whether test or core is wrong.**
-- `ruff check` and `ruff format --check` have not been run at all.
-- `.github/workflows/ci.yml` is copied from sn76489-python unchanged (it already
-  matches what was asked); not exercised.
+`tests/test_measured.py` was run and each of its 32 failures decided against
+`spec.md`. Now **445 tests pass** (24 contract, 229 manual, 192 measured), and
+`ruff check` and `ruff format --check` (0.16.8, the pinned version) are clean.
+
+**One change to the core, from the spec, not from a test.** The core reset each
+operator's phase when that operator's own damp ended (a CHOICE under U20). Spec
+7.10 says "both of a channel's phase counters are set to zero when the envelope
+leaves the damp state". The two differ when a modulator was held through key-off
+(spec 8.23) and damps from a low level while the carrier's damp ends at once. Now
+the carrier's damp end resets both, in the same sample, before either steps; the
+modulator's slot comes first, so it resets itself when it sees its carrier about
+to leave damp. The single-operator percussion sounds still reset only their own
+phase. The exact sample is still CHOICE (U20). New test:
+`test_the_carriers_damp_end_resets_both_phases`.
+
+**Open, written down, not fixed.** With a sounding, sustained modulator, notes
+played again after a key-off do not repeat sample for sample: under T14 the
+modulator damps from its held level on every key-on, and where its damp steps fall
+depends on the free-running counter. S4's "each time the same note is played, the
+wave looks exactly the same" may be a visual remark, or may count against T14
+(U13). No document settles it; T14 stands.
+
+**Faults of the tests** (31 of the 32), each checked against the spec:
+
+- The modulation and feedback reference left out the sample in which damp ends;
+  that sample already sounds (U20 choice). With it, all six depth and six feedback
+  cases match the separate writing of the operator exactly.
+- `test_the_sine_has_1024_steps`: block 1 gives 4 samples a step, not 8; block 0.
+- `test_the_modulator_is_one_sample_out_of_step`: a bound of 192 on run lengths
+  had no source; the long runs are the spec's arithmetic (the reference agrees).
+- Half-period crossing: the test compared 16 words exactly; S4's "overlap" is
+  taken as the sign change falling on the same sample at every depth (it does, at
+  samples 8192 and 16384). The sine table has no exact zero (6.3).
+- Note repeated: PLAIN_SINE has RR 0, so the carrier never released.
+- Flat-segment means of 512/3 and 256/3 cannot be hit to two decimals by a finite
+  window; checked to 0.05 and as {floor, ceil} lengths.
+- Decay rate 9: the row was [2048 ×3, 1024 ×2]; spec 8.5 gives s = 11, so
+  [4096 ×3, 2048 ×2]. S4's prose confirms rate 9 without printing its cycle; the
+  row was the earlier session's own arithmetic. Rate 25: window too short.
+- First segments: starts every $155 samples missed lengths; every $40 finds
+  exactly S4's sets for AR 4/DR 2 and AR 5/DR 2 at blocks 2, 4, 6.
+- Attack from 124: `trace[:start]` excluded the 124 itself.
+- Instant attack: MULTI 1 is a 16-sample period; MULTI 4 is the quarter-rate tone
+  the comment meant. The level-0 check is the measured part; the word 255 rests
+  on the U20 choice.
+- Key-off from decay: SL 0 never decays; SL 15.
+- Modulator without release: DR 4 at block 4 needs ~13,000 samples to reach 16;
+  the percussive half now compares with a twin chip that keeps the key on.
+- Bass drum: volume 3 kept the peak at 86; volume 0.
+- Cymbal: "≤ 3 sizes" had no source; now the size never rises after the peak.
+- Aliases: 0x18 cleared F-number bit 8, leaving F-number 0; 0x19.
+- Scaffolding removed: `first_segments`, the dead loop in
+  `test_decay_step_lengths`, the dead half of `test_the_snare_table`.
+
+Lint fixes were mechanical (`itertools.pairwise`, one `min`, the fetch script
+made executable, formatting).
 
 ## Not started
 
@@ -100,16 +136,17 @@ Written for whoever continues, with no memory of the session assumed. Read
 5. A test log was first written to `validation/build.log` (not ignored) and
    then moved into the ignored `validation/build/`. It was never committed.
 6. A hung pytest process of my own was ended with `kill`.
+7. Second session: a grep of `20150320.txt` through `prose.py --tables`
+   displayed the same `eg_shift` formula line as slip 1 (the filter does not
+   catch it). Nothing was taken from it; spec 8.5 already states the rule.
 
 All of these are also in `provenance-audit.md` except 5 and 6.
 
 ## Next steps, in order
 
-1. `.venv-pypy/bin/python -m pytest -q tests/test_measured.py` (7 seconds; write
-   output to `validation/build/`). Go through the 32 failures one by one against
-   `spec.md`. Tidy the scaffolding named above.
+1. Done (rung 2a triage above).
 2. Write `tests/test_community.py` and `tests/test_provisional.py`.
-3. `ruff check .` and `ruff format --check .`; fix.
+3. Done; keep it clean.
 4. Extend `scripts/fetch_references.py` with a pinned Nuked-OPLL (header,
    LICENSE, README may be opened; `opll.c` never). Write
    `validation/nuked_harness.c` and `validation/closed_box.py` after

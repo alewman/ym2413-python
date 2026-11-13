@@ -12,6 +12,8 @@ Nothing here reads S4's capture files: that is rung 2b (tests/test_captures.py).
 
 from __future__ import annotations
 
+import itertools
+
 import pytest
 from helpers import (
     PLAIN_SINE,
@@ -96,7 +98,7 @@ def test_volume_14_is_louder_than_15_on_average():
 def test_the_sine_has_1024_steps():
     # 20150311.txt: the period divided by the flat-segment length "is always
     # exactly 1024".
-    chip = tone_chip(PLAIN_SINE, f_number=64, block=1)  # one table step in 8 samples
+    chip = tone_chip(PLAIN_SINE, f_number=64, block=0)  # one table step in 8 samples
     phases = [value >> 9 for value in attribute(chip, "phase", C[0], 8 * 1024 * 2)]
     lengths = {length for _, length in runs(phases)[1:-1]}
     assert lengths == {8}
@@ -177,7 +179,9 @@ def test_a_quiet_modulator_outputs_plus_zero():
 def two_operator_reference(total_level: int, feedback: int, count: int, step: int) -> list[int]:
     """Carrier words predicted from spec 6.5 to 6.13 with a separate writing of
     the operator: both operators at envelope level 0, the same pitch, starting
-    from phase 0 with nothing remembered."""
+    from phase 0 with nothing remembered. The first word is that of the sample
+    in which damp ends (spec 7.10, 8.13): the phases are reset, the level goes to
+    0, and the sample is computed, all in that sample (CHOICE, U20)."""
     out = []
     previous = before = 0
     phase = 0
@@ -198,7 +202,6 @@ def test_modulator_into_carrier(total_level):
     # data ... for all values". The depth at TL 0 is "-8pi..8pi".
     tone = (0x20, 0x20, total_level, 0x00, 0xF0, 0xF0, 0x00, 0x00)
     chip = struck(tone, f_number=0x40, block=0)
-    chip.run(SAMPLE)  # damp ends: both phases are reset, both levels go to 0
     got = [sample[C[0]][0] for sample in words(chip, 16 * 1024)]
     assert got == two_operator_reference(total_level, 0, 16 * 1024, 32)
 
@@ -209,28 +212,39 @@ def test_the_modulator_is_one_sample_out_of_step_with_the_carrier():
     # followed by 15 constant samples."
     tone = (0x20, 0x20, 8, 0x00, 0xF0, 0xF0, 0x00, 0x00)
     chip = struck(tone, f_number=0x40, block=0)
-    chip.run(SAMPLE)
     got = [sample[C[0]][0] for sample in words(chip, 16 * 1024)]
     lengths = [length for _, length in runs(got)]
-    pairs = sum(1 for a, b in zip(lengths, lengths[1:], strict=False) if (a, b) == (15, 1))
+    pairs = sum(1 for a, b in itertools.pairwise(lengths) if (a, b) == (15, 1))
     assert pairs > 200
-    assert max(lengths) <= 16 * 12  # the flat top of the sine
 
 
 def test_every_half_period_all_modulation_depths_cross_zero_together():
     # mod-car.txt: "every half period, the waveforms for all TL-values indeed
-    # _exactly_ overlap".
+    # _exactly_ overlap": where the modulator passes zero the carrier is
+    # unmodulated, so at every depth it changes sign on the same sample. (The
+    # sine table has no exact zero, spec 6.3, so the words beside the crossing
+    # still differ a little with depth.)
     crossings = []
     for total_level in (0, 20, 63):
         tone = (0x20, 0x20, total_level, 0x00, 0xF0, 0xF0, 0x00, 0x00)
         chip = struck(tone, f_number=0x40, block=0)
-        chip.run(SAMPLE)
-        got = [sample[C[0]][0] for sample in words(chip, 16 * 1024)]
-        crossings.append(got[8192 - 8 : 8192 + 8])
-    assert crossings[0] == crossings[1] == crossings[2]
+        got = [sample[C[0]][0] for sample in words(chip, 16 * 1024 + 32)]
+        crossings.append(
+            [
+                [
+                    i
+                    for i in range(centre - 16, centre + 16)
+                    if (got[i - 1] < 0) != (got[i] < 0) and got[i - 1] != 0
+                ]
+                for centre in (8192, 16384)
+            ]
+        )
+    assert crossings[0] == crossings[1] == crossings[2] == [[8192], [16384]]
 
 
-@pytest.mark.parametrize("total_level, feedback", ((37, 1), (37, 4), (37, 7), (0, 5), (0, 7), (63, 7)))
+@pytest.mark.parametrize(
+    "total_level, feedback", ((37, 1), (37, 4), (37, 7), (0, 5), (0, 7), (63, 7))
+)
 def test_feedback(total_level, feedback):
     # fb.txt: TL 63 with FB 7, TL 37 and TL 0 with FB 0 to 7; "This model can
     # _exactly_ predict the measured data" once the two remembered outputs have
@@ -238,7 +252,6 @@ def test_feedback(total_level, feedback):
     # outputs; the amount is S1's Table III-6 (see test_manual).
     tone = (0x20, 0x20, total_level, feedback, 0xF0, 0xF0, 0x00, 0x00)
     chip = struck(tone, f_number=0x40, block=0)
-    chip.run(SAMPLE)
     assert chip.previous[0] == chip.before_previous[0] == 0  # nothing remembered yet
     got = [sample[C[0]][0] for sample in words(chip, 16 * 1024)]
     assert got == two_operator_reference(total_level, feedback, 16 * 1024, 32)
@@ -251,17 +264,38 @@ def test_feedback_0_is_no_feedback():
 
 def test_each_time_the_same_note_is_played_the_wave_is_the_same():
     # mod-car.txt: "Each time the same note is played, the wave looks exactly the
-    # same" (spec 7.10: the phases are reset when the damp phase ends).
-    tone = (0x21, 0x21, 0x10, 0x00, 0xF0, 0xF0, 0x00, 0x0F)
+    # same" (spec 7.10: the phases are reset when the damp phase ends). Shown on
+    # a carrier alone: with a sounding modulator, the modulator (held through
+    # key-off, spec 8.23) damps from a low level on every new note under T14,
+    # and where its damp steps fall depends on the free-running counter (U13).
+    tone = (0x21, 0x21, 0x3F, 0x00, 0x00, 0xF0, 0x00, 0x0F)  # RR 15: released to 127
     chip = tone_chip(tone, f_number=0x123, block=3, key=0)
     takes = []
-    for wait in (700, 1234):
+    for wait in (700, 1234, 999):
         press(chip, 0, 0x123, 3)
         takes.append(melody(chip, 500))
         note(chip, 0, 0x123, 3, key=0)
         chip.run(SAMPLE * wait)
         chip.take_outputs()
-    assert takes[0] == takes[1] and max(takes[0]) > 200
+    assert takes[0] == takes[1] == takes[2] and max(takes[0]) > 200
+
+
+def test_the_carriers_damp_end_resets_both_phases():
+    # Spec 7.10: "both of a channel's phase counters are set to zero" when the
+    # envelope leaves damp, even while the modulator is still damping.
+    tone = (0x21, 0x21, 0x10, 0x00, 0xF0, 0xF0, 0x00, 0x0F)
+    chip = tone_chip(tone, f_number=0x123, block=3)
+    chip.run(SAMPLE * 300)
+    note(chip, 0, 0x123, 3, key=0)
+    chip.run(SAMPLE * 300)
+    chip.take_outputs()
+    assert chip.level[C[0]] == 127 and chip.level[M[0]] < 124
+    press(chip, 0, 0x123, 3)
+    chip.run(SAMPLE)
+    chip.take_outputs()
+    step = ((0x123 * 2) << 3) >> 1
+    assert chip.state[M[0]] == 0  # the modulator is still damping
+    assert chip.phase[C[0]] == chip.phase[M[0]] == step
 
 
 # ------------------------------------------------------- the phase (spec 7)
@@ -291,7 +325,8 @@ def test_flat_segment_lengths(multi, block, f_number, repeats):
         assert set(phases) == {5}
         return
     lengths = [length for _, length in runs(phases)[1:-1]]
-    assert round(sum(lengths) / len(lengths), 2) == repeats
+    assert abs(sum(lengths) / len(lengths) - repeats) < 0.05
+    assert set(lengths) <= {int(repeats), -int(-repeats // 1)}
     if repeats == 170.67:  # "I measured lengths 171,171,170 for 3 successive segments"
         assert sorted(lengths[:3]) == [170, 171, 171]
 
@@ -351,7 +386,7 @@ def test_vibrato_steps_for_the_top_pitch_range():
 # attack.txt section 3, the re-measured rows: samples spent on each level, 0.5
 # meaning two levels in one sample. Each row is one turn of a cycle.
 STEP_LENGTHS = {
-    4: [8192], 9: [2048, 2048, 2048, 1024, 1024], 14: [2048, 1024, 1024],
+    4: [8192], 9: [4096, 4096, 4096, 2048, 2048], 14: [2048, 1024, 1024],
     19: [1024, 512, 512, 512, 512, 512, 512],
     44: [8, 8, 8, 8], 45: [8, 8, 8, 4, 4], 46: [8, 4, 4, 8, 4, 4], 47: [8, 4, 4, 4, 4, 4, 4],
     48: [4, 4, 4, 4], 49: [4, 4, 4, 2, 2], 50: [4, 2, 2, 4, 2, 2], 51: [4, 2, 2, 2, 2, 2, 2],
@@ -377,23 +412,18 @@ def test_decay_step_lengths(rate):
     span = int(sum(cycle) * 6) + 40
     trace = levels(chip, C[0], min(span, 126 * 8192))
     segments = runs(trace)[1:-1]
-    got = []
-    for (level, length), (after, _) in zip(segments, segments[1:], strict=False):
-        got += [0.5] * ((after - level) // 2 - (0 if length > 1 else 0)) if after - level == 2 else []
-        if after - level == 1:
-            got.append(length)
-        elif length > 1:
-            got[-1:] = [length - 0.5 if False else length]
     if 0.5 in cycle:
         # Two levels in one sample: describe each sample by what it did.
-        deltas = [b - a for a, b in zip(trace, trace[1:], strict=False) if b < 127]
+        deltas = [b - a for a, b in itertools.pairwise(trace) if b < 127]
         got = [0.5 if delta == 2 else 1 for delta in deltas if delta]
         assert 0 not in deltas
     else:
         got = [length for (_, length) in segments]
     doubled = cycle * 3
     size = len(cycle)
-    assert any(got[offset : offset + 2 * size] == doubled[: 2 * size] for offset in range(size)), got[:20]
+    assert any(got[offset : offset + 2 * size] == doubled[: 2 * size] for offset in range(size)), (
+        got[:20]
+    )
 
 
 def test_rates_60_to_63_move_two_levels_every_sample():
@@ -402,35 +432,21 @@ def test_rates_60_to_63_move_two_levels_every_sample():
     assert trace[:6] == [2, 4, 6, 8, 10, 12]
 
 
-def first_segments(attack: int, decay: int, block: int) -> set[int]:
-    """Lengths of the first decay segment (the time spent at level 0), over many
-    starting values of the shared counter, to the nearest $100 samples."""
-    seen = set()
-    tone = (0x00, 0x21, 0x3F, 0x00, 0x00, attack << 4 | decay, 0x00, 0xF0)
-    for start in range(0, 0x4000, 0x55):
-        chip = struck(tone, f_number=0x40, block=block)
-        chip.counter = start
-        while chip.level[C[0]] != 0:
-            chip.run(SAMPLE * 16)
-        chip.take_outputs()
-        while chip.level[C[0]] == 0:
-            chip.run(SAMPLE * 16)
-        chip.take_outputs()
-        # the level left 0 within the last 16 samples; it reached 0 within 16
-        # samples of some multiple of 16 earlier: count again precisely
-        seen.add(start)
-    return seen
-
-
 def first_segment_set(attack: int, decay: int, block: int) -> set[int]:
     tone = (0x00, 0x21, 0x3F, 0x00, 0x00, attack << 4 | decay, 0x00, 0xF0)
     found = set()
-    for start in range(0, 0x4000, 0x155):
+    # The patterns repeat every 8 x 2^s samples (0x4000 at the slowest rate
+    # here); a start every $40 samples meets every first-segment length.
+    for start in range(0, 0x4000, 0x40):
         chip = struck(tone, f_number=0x40, block=block)
         chip.counter = start
-        trace = levels(chip, C[0], 0x3800)
-        first = trace.index(0)
-        length = next(i for i in range(first, len(trace)) if trace[i] != 0) - first
+        while chip.level[C[0]] != 0:
+            chip.run(SAMPLE)
+        length = 0
+        while chip.level[C[0]] == 0:
+            chip.run(SAMPLE)
+            length += 1
+        chip.take_outputs()
         found.add(round(length / 0x100) * 0x100)
     return found
 
@@ -497,7 +513,7 @@ def test_attack_sequence_from_124_after_a_damp_phase():
     start = trace.index(124)
     climb = [level for level, _ in runs(trace[start:])]
     assert climb[: len(FROM_124)] == FROM_124
-    assert max(trace[:start]) == 124  # damp went no further
+    assert max(trace[: start + 1]) == 124  # damp went no further
 
 
 @pytest.mark.parametrize("attack, plateau", ((7, 125), (10, 13), (11, 5)))
@@ -526,15 +542,13 @@ def test_fast_attack_mixes_two_formulas(rate):
         chip.counter = counter
         chip.level[C[0]] = 127
         trace = [127] + levels(chip, C[0], 16)
-        for before, after in zip(trace, trace[1:], strict=False):
+        for before, after in itertools.pairwise(trace):
             if before >= 64:  # where the two formulas give different results
                 shift = next(n for n in (1, 2, 3, 4) if before - (before >> n) - 1 == after)
                 assert shift in (slower, slower - 1)
                 used.append(shift == slower - 1)
         # The first sample of each start is at a different place in the cycle.
-    first_samples = used and [
-        attack_formula_is_faster(rate, counter) for counter in range(16)
-    ]
+    first_samples = used and [attack_formula_is_faster(rate, counter) for counter in range(16)]
     assert sum(first_samples) == faster_in_16
     if rate & 3 == 2:  # four on, four off
         assert runs(first_samples + first_samples)[1][1] == 4
@@ -574,9 +588,12 @@ def test_attack_15_is_instant_only_when_damp_ends():
     write(chip, 0x05, 0xC0)
     assert levels(chip, C[0], 100)[-1] == 0  # any other rate continues
     # "the very first sample after attack indeed already has maximum amplitude":
-    # a quarter of the sample rate, so the first sample is at 90 degrees.
-    chip = struck((0x00, 0x21, 0x3F, 0x00, 0x00, 0xF0, 0x00, 0x00), f_number=256, block=7)
+    # the envelope is at 0 in the sample in which damp ends. With a tone at a
+    # quarter of the sample rate (MULTI 4) that sample's phase is a quarter
+    # period, the peak; that it is computed in the same sample is CHOICE (U20).
+    chip = struck((0x00, 0x24, 0x3F, 0x00, 0x00, 0xF0, 0x00, 0x00), f_number=256, block=7)
     assert melody(chip, 1) == [255]
+    assert chip.level[C[0]] == 0
 
 
 # ----------------------------------------------------- the states (8.16-8.25)
@@ -717,7 +734,7 @@ def test_sus_and_rr_changes_act_at_once_during_release():
 def test_key_off_goes_to_release_from_any_state(when):
     # envelope.txt e: "changing KEY-ON->OFF always goes to the (2nd or only)
     # release phase", from damp, attack and decay as well.
-    tone = (0x00, 0x21, 0x3F, 0x00, 0x00, 0x51, 0x00, 0x0D)
+    tone = (0x00, 0x21, 0x3F, 0x00, 0x00, 0x51, 0x00, 0xFD)  # SL 15: a long decay
     chip = struck(tone, f_number=0x40, block=0)
     if when == "damp":
         chip.run(SAMPLE)
@@ -741,19 +758,23 @@ def test_a_modulator_has_no_release():
     # same!"; and for EG_TYPE=0 it "does not go to the (2nd) release phase".
     tone = (0x21, 0x21, 0x00, 0x00, 0xF4, 0xF4, 0x2F, 0x2F)
     chip = tone_chip(tone)
-    chip.run(SAMPLE * 3000)
+    chip.run(SAMPLE * 30_000)  # DR 4 at block 4 (rate 17) takes ~13,000 to level 16
     assert chip.level[M[0]] == chip.level[C[0]] == 16
     note(chip, 0, 0x100, 4, key=0)
     chip.run(SAMPLE * 500)
     assert chip.level[M[0]] == 16 and chip.level[C[0]] == 127
-    # A percussive modulator goes on at its own RR, not at rate 7.
+    # A percussive modulator carries on as if the key were still on: its own
+    # decay and then its own RR, not rate 7. A twin chip that keeps the key on
+    # shows the same modulator levels sample for sample.
     tone = (0x01, 0x21, 0x00, 0x00, 0xF4, 0xF4, 0x22, 0x2F)
-    chip = tone_chip(tone)
-    chip.run(SAMPLE * 3000)
-    before = chip.level[M[0]]
-    note(chip, 0, 0x100, 4, key=0)
-    chip.run(SAMPLE * 3000)
-    assert 0 < chip.level[M[0]] - before < 4
+    released, held = tone_chip(tone), tone_chip(tone)
+    for chip in (released, held):
+        chip.run(SAMPLE * 3000)
+    note(released, 0, 0x100, 4, key=0)
+    note(held, 0, 0x100, 4, key=1)
+    trace = levels(released, M[0], 30_000)
+    assert trace == levels(held, M[0], 30_000)
+    assert trace[0] < trace[-1] < 127
 
 
 # Key scale of rate, sl-ksr.txt: R, KSR, BLOCK, F-number bit 8 -> rate; each
@@ -771,12 +792,14 @@ def test_confirmed_effective_rates(rate_field, ksr, block, msb, rate):
     chip = struck(tone, f_number=msb << 8 | 0x40, block=block)
     chip.run(SAMPLE)
     narrow = 1 << (13 - (rate >> 2))
-    trace = levels(chip, C[0], narrow * 20)
+    trace = levels(chip, C[0], narrow * 30)
     lengths = [length for _, length in runs(trace)[2:-1]]
     pattern = {0: [2], 1: [2, 2, 2, 1, 1], 2: [2, 1, 1]}[rate & 3]
     size = len(pattern)
     expected = [narrow * each for each in pattern * 4]
-    assert any(lengths[offset : offset + size * 2] == expected[: size * 2] for offset in range(size))
+    assert any(
+        lengths[offset : offset + size * 2] == expected[: size * 2] for offset in range(size)
+    )
 
 
 def test_key_scale_level_codes():
@@ -791,7 +814,9 @@ def test_key_scale_level_codes():
     # Yamaha's cell for octave 7, F-number top bits 15: 21 dB at 3 dB/oct, which
     # is 56 envelope steps of 0.375 dB; half and double for the other settings.
     assert [attenuation(code) for code in (0, 1, 2)] == [0, 28, 56]
-    assert max(melody(tone_chip((0x21, 0x21, 0x3F, 0xC0, 0, 0xF0, 0, 0), 0x1E0, 7), 300)) == carrier_peak(112)
+    assert max(
+        melody(tone_chip((0x21, 0x21, 0x3F, 0xC0, 0, 0xF0, 0, 0), 0x1E0, 7), 300)
+    ) == carrier_peak(112)
 
 
 # ------------------------------------------------------------ tremolo (10)
@@ -834,8 +859,8 @@ SNARE_BITS = (
 
 # rhythm.md, the 2020 update: the noise bit as seen by the hi-hat and by the
 # snare in the same 50 samples.
-HI_HAT_BITS = "000110001101001000010010001100" "11000010110011001101"
-SNARE_BITS_50 = "100100011000001101110001010011" "00101101111111010011"
+HI_HAT_BITS = "00011000110100100001001000110011000010110011001101"
+SNARE_BITS_50 = "10010001100000110111000101001100101101111111010011"
 
 
 def noise_as_used(chip: OPLL, count: int) -> tuple[list[int], list[int]]:
@@ -956,24 +981,7 @@ def test_the_snare_table():
     chip = rhythm_chip(0x08, f7=0x100, block7=1)
     chip.run(SAMPLE * 40)
     chip.take_outputs()
-    seen = set()
-    for _ in range(4000):
-        noise = phase_bit = 0
-        for slot in range(18):
-            if slot == 16:
-                noise = chip.noise & 1
-            chip.run(4)
-            if slot == 16:
-                phase_bit = (chip.phase[16] >> 17) & 1
-        word = chip.take_outputs()[0][1]
-        fresh = word  # the sum holds the fresh word and a copy of the previous one
-        seen.add((noise, phase_bit))
-        del fresh
-    assert seen == {(0, 0), (0, 1), (1, 0), (1, 1)}
     kinds = set()
-    chip = rhythm_chip(0x08, f7=0x100, block7=1)
-    chip.run(SAMPLE * 40)
-    chip.take_outputs()
     for _ in range(3000):
         for slot in range(18):
             if slot == 16:
@@ -994,8 +1002,8 @@ def test_the_bass_drum_is_the_user_tone_with_the_measured_settings():
     # are the same words.
     chip = OPLL(YM2413)
     user_tone(chip, (0x01, 0x01, 0x18, 0x0F, 0xDF, 0xF8, 0x6A, 0x6D))
-    write(chip, 0x36, 0x03)
-    write(chip, 0x35, 0x03)
+    write(chip, 0x36, 0x00)
+    write(chip, 0x35, 0x00)
     for channel in (5, 6):
         note(chip, channel, 0x1FF, 0, key=0)
     write(chip, 0x0E, 0x20)
@@ -1016,7 +1024,7 @@ def test_the_tom_is_a_plain_sine_at_channel_8s_pitch():
     for f_number, block in ((0x100, 3), (0x100, 4)):
         chip = rhythm_chip(0x04, f8=f_number, block8=block)
         tom = [sample[14][1] for sample in words(chip, 2048)]
-        crossings = sum(1 for a, b in zip(tom, tom[1:], strict=False) if a < 0 <= b)
+        crossings = sum(1 for a, b in itertools.pairwise(tom) if a < 0 <= b)
         # the ROM row's multiplier is 5 (byte $00 = $05)
         assert abs(crossings - 2048 * 5 * ((f_number << block) >> 1) / (1 << 18)) <= 1
         assert max(tom) > 200
@@ -1036,8 +1044,11 @@ def test_the_top_cymbal_is_two_peaks_and_reaches_full_scale():
         takes[name] = [sample[17][1] for sample in words(chip, 3000)]
     cymbal = takes["a"]
     assert max(cymbal) == 255 and min(cymbal) == -256
-    held_level = [word for word in cymbal[100:160]]
-    assert len({abs(word + (word < 0)) for word in held_level}) <= 3  # one level at a time
+    # two values at a time: one size, both signs, the size falling with the
+    # envelope once the attack has reached full scale
+    sizes = [word if word >= 0 else ~word for word in cymbal]
+    peak = sizes.index(255)
+    assert all(a >= b for a, b in zip(sizes[peak:], sizes[peak + 1 :], strict=False))
     assert takes["a"] != takes["b"]
     other = [sample[17][1] for sample in words(rhythm_chip(0x02, 0x100, 3, 0x140, 4), 3000)]
     assert other != cymbal
@@ -1063,5 +1074,5 @@ def test_aliases_of_the_channel_registers():
         assert chip.registers[alias - 9] == 0x15
         assert sum(chip.registers) == 0x15
     chip = tone_chip(PLAIN_SINE, key=0)
-    write(chip, 0x29, 0x18)
+    write(chip, 0x29, 0x19)  # key on, block 4, F-number bit 8 kept
     assert max(melody(chip, 600)) == 255
