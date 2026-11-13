@@ -86,3 +86,14 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
 
 If you meet a source whose licence or author's wishes you are unsure of, stop and
 report. Do not decide for yourself.
+
+## Amendment, 2026-11-13: the closed box as a measuring instrument
+
+The owner has ruled that a die-derived model run as a closed box (rule 8) **may be
+used as a measuring instrument**, not only as a detector: to recover ROM contents
+by searching for inputs that reproduce its output, to fit constants to its output,
+and to build a stand-in from its outputs. Rule 8 otherwise stands: its source is
+never opened, searched or quoted, including when a comparison fails. A value got
+this way is marked as a **closed-box measurement** (emulator tier, naming the model
+and its pinned commit), never as documented or as measured on hardware, and a
+document or a hardware measurement that disagrees overrules it.
