@@ -16,7 +16,7 @@ htmlcov/
 # Fetched references (scripts/fetch_references.py). Third-party: never commit them.
 reference/
 
-# Register streams exported from a board. Derived from ROMs: local only.
+# Register streams exported from a board. Derived from ROMs: never committed.
 validation/streams/
 
 # Things set aside instead of deleted, and what the detector harnesses build

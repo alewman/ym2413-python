@@ -3,7 +3,8 @@
 S6 is the NESdev wiki's "VRC7 audio" page, pinned in famicom-python at
 ``reference/nesdev-wiki/VRC7_audio.wiki``; S9 is SMS Power's "YM2413" page, pinned
 in sms-python at ``reference/smspower-wiki/YM2413.pmwiki``. Tests that parse a
-pinned file skip when the sibling repository is absent. Every test here is tier
+pinned file skip when the sibling repository is absent (FAMICOM_PYTHON_DIR and
+SMS_PYTHON_DIR name checkouts kept elsewhere). Every test here is tier
 3: it proves agreement with the community's account, not that account. Where the
 account is about the VRC7 and the core applies it to the YM2413 too, the YM2413
 case is PROVISIONAL (T4) and says so.
@@ -11,7 +12,9 @@ case is PROVISIONAL (T4) and says so.
 
 from __future__ import annotations
 
+import os
 import re
+from pathlib import Path
 
 import pytest
 from helpers import (
@@ -31,8 +34,11 @@ from helpers import (
 
 from ym2413_python import DS1001, OPLL, YM2413
 
-WIKI = ROOT.parent / "famicom-python" / "reference" / "nesdev-wiki" / "VRC7_audio.wiki"
-SMS_POWER = ROOT.parent / "sms-python" / "reference" / "smspower-wiki" / "YM2413.pmwiki"
+# The boards' checkouts, beside this repository unless the environment names others.
+FAMICOM_PYTHON = Path(os.environ.get("FAMICOM_PYTHON_DIR", ROOT.parent / "famicom-python"))
+SMS_PYTHON = Path(os.environ.get("SMS_PYTHON_DIR", ROOT.parent / "sms-python"))
+WIKI = FAMICOM_PYTHON / "reference" / "nesdev-wiki" / "VRC7_audio.wiki"
+SMS_POWER = SMS_PYTHON / "reference" / "smspower-wiki" / "YM2413.pmwiki"
 
 # One row of the wiki's tables: "  1 | 03 21 05 06 E8 81 42 27 | Buzzy Bell" or,
 # for the drums, "    | 01 01 18 0F DF F8 6A 6D | Bass Drum".
@@ -41,7 +47,7 @@ ROW = re.compile(r"^\s*([0-9A-F]?)\s*\|\s*((?:[0-9A-F]{2}\s+){7}[0-9A-F]{2})\s*\
 
 def wiki_rows() -> tuple[dict[int, tuple[int, ...]], list[tuple[int, ...]]]:
     if not WIKI.exists():
-        pytest.skip(f"{WIKI} is absent (famicom-python not beside this repository)")
+        pytest.skip(f"{WIKI} is absent (no famicom-python checkout; see FAMICOM_PYTHON_DIR)")
     voices: dict[int, tuple[int, ...]] = {}
     drums: list[tuple[int, ...]] = []
     for line in WIKI.read_text(encoding="utf-8").splitlines():
