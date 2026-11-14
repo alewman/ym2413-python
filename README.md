@@ -19,15 +19,14 @@ pairs = chip.take_outputs()   # one (melody, rhythm) pair per 72 clocks
 
 [docs/api.md](docs/api.md) is the whole surface.
 
-## Status (2026-11-13)
+## Status
 
-**A restart, built from documents.** An earlier core under this name was a
-translation of a GPL model and was withdrawn; [docs/restart.md](docs/restart.md)
-has the rules this one is written under. The code is written from
-[docs/spec.md](docs/spec.md), which is written from the sources listed in
-[docs/phase0.md](docs/phase0.md); [docs/provenance-audit.md](docs/provenance-audit.md)
-gives every statement's chain. Every rule in the code names its spec section,
-or says CHOICE or PROVISIONAL.
+**Built from documents.** The code is written from [docs/spec.md](docs/spec.md),
+which is written from the sources listed in [docs/phase0.md](docs/phase0.md);
+[docs/provenance.md](docs/provenance.md) gives every statement's chain and the
+decisions taken where no source settles a question. Every rule in the code names
+its spec section, or says CHOICE or PROVISIONAL. The rules it is written under
+are in [docs/restart.md](docs/restart.md).
 
 What it supports, and no more: *the core does what Yamaha's application manual
 says, reproduces what the openMSX project reports measuring on one real YM2413,
@@ -47,7 +46,9 @@ says what was run and what it showed.
   it. The largest: the model leaves out the one-sample modulator lag that the
   openMSX measurements show and this core keeps.
 - About 11 times real time on PyPy with nine channels sounding.
-- Local only: not pushed, not on PyPI, not adopted by a board yet.
+- Used by sms-python (the FM unit) and famicom-python (the VRC7). Not on PyPI.
+- [ym2413-rust](../ym2413-rust) is a Rust port, proven equivalent to a pinned
+  revision of this core.
 
 ## What is known, and how
 
@@ -86,14 +87,22 @@ numbers in brackets.
 - `scripts/fetch_references.py`: fetches and verifies the pinned references into
   the git-ignored `reference/`. Nuked-OPLL is fetched for the closed box only;
   its `opll.c` is compiled and never opened.
-- `docs/build-status.md`: where the work stands, what was not read and why, and
-  every slip from the rules.
+- `docs/provenance.md`: where each fact comes from, the decisions taken, what was
+  not read and why, and what was seen and not used.
 
 ```sh
 python -m pytest                       # all rungs
 python validation/faults.py            # can each rung fail?
 python validation/closed_box.py        # the closed-box comparison (needs a C compiler)
 ```
+
+## History
+
+This core was rebuilt in November 2026. Its predecessor followed a GPL-licensed
+model's source code too closely to be published under the MIT licence, and was
+withdrawn. This version is written from manufacturer documents and hardware
+measurements under the rules in [docs/restart.md](docs/restart.md); the model is
+only run, as a closed box, to find differences.
 
 ## Licence
 

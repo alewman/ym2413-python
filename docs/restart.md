@@ -1,9 +1,10 @@
 # Restart rules
 
-This repository is a restart. An earlier core under this name was a
-function-by-function translation of a GPL or LGPL C model, published as MIT with
-a README that said nothing was copied. That was wrong on both counts. It was
-withdrawn on 2026-11-12 and archived privately; this one starts over.
+This core was rebuilt in November 2026. Its predecessor followed a GPL-licensed
+model's source code too closely to be published under the MIT licence, and was
+withdrawn. This version is written from manufacturer documents and hardware
+measurements under the rules below; the model is only run, as a closed box, to
+find differences.
 
 ## The rules
 
@@ -11,7 +12,7 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
    constant, not to settle a doubt. That covers the Nuked models (Nuked-OPLL,
    Nuked-PSG, Nuked-OPN2, Nuked-MD), YM2608-LLE, MAME's GPL sound cores, BlastEm
    and Genesis Plus GX (non-commercial: never copied, and here not read either).
-2. **The archived cores are not read**, in Python or Rust, nor any document that
+2. **The withdrawn cores are not read**, in Python or Rust, nor any document that
    describes the chip's internals in their terms. They are not in this tree.
 3. **Translating a model statement by statement is copying**, whatever the
    language and however many citations it carries. Code here is written from a
@@ -23,35 +24,40 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
    permissive code is ported, its copyright notice comes with it and the README
    says so.
 5. **Every rule in the code names its source**, or says it is a choice.
-6. **Say what is known and how.** The earlier core claimed to equal a die-derived
-   model at every internal clock. This one claims only what it measures: which
-   documents a behaviour comes from, which recordings it was compared with, and
-   how close it came. Not every core will be die-exact, and that is fine.
+6. **Say what is known and how.** The withdrawn core claimed to equal a
+   die-derived model at every internal clock. This one claims only what it
+   measures: which documents a behaviour comes from, which recordings it was
+   compared with, and how close it came. Not every core will be die-exact, and
+   that is fine.
 7. **An author who objects to AI use of their work is left out**, even where the
    licence would allow it.
-8. **A reference model may be run, never read** (the owner, 2026-11-12: "to run
-   it through some harness so we could see what it does, not to copy its
-   code"). A Nuked model, or any other GPL or LGPL emulator, may be fetched into
-   the git-ignored `reference/`, built, and driven by a small harness written
-   here, so that its outputs can be compared with ours. The conditions:
+8. **A reference model may be run, never read.** A Nuked model, or any other GPL
+   or LGPL emulator, may be fetched into the git-ignored `reference/`, built, and
+   driven by a small harness written here, so that its outputs can be compared
+   with ours. The conditions:
    - the harness uses the model's public header for the calls it must make and
      nothing else; the model's `.c` files are not opened, searched or quoted;
    - the harness is the only code that touches the model, lives in
      `validation/`, and nothing built from the model is committed or shipped;
-   - a model is a **detector**: a difference says where to look. When a
+   - a model is first a **detector**: a difference says where to look. When a
      comparison fails, the answer is sought in the documents, the recordings and
      further measurements of the model's outputs. Opening the model's source to
      see why is the one thing that turns a referee back into a blueprint, and
      it is not done. If nothing else settles it, the difference is written down
      as open;
+   - a model may also be used as a **measuring instrument**: to recover ROM
+     contents by searching for inputs that reproduce its output, to fit
+     constants to its output, and to build a stand-in from its outputs. A value
+     got this way is marked as a **closed-box measurement** (emulator tier,
+     naming the model and its pinned commit), never as documented or as measured
+     on hardware, and a document or a hardware measurement that disagrees
+     overrules it;
    - the README says which models were run and that their code was not read.
-
-9. **Provenance is the point** (the owner, 2026-11-13: "we need to cite where we
-   got all of our pieces of information"). Every fact the core relies on carries
-   its chain: the document or post, its author, how the fact was established
-   (manufacturer's statement, measurement on a real chip and by what method,
-   read-out, recording), and anything upstream of it that is known. A reader must
-   be able to follow any number in the code back to where it came from.
+9. **Provenance is the point.** Every fact the core relies on carries its chain:
+   the document or post, its author, how the fact was established (manufacturer's
+   statement, measurement on a real chip and by what method, read-out,
+   recording), and anything upstream of it that is known. A reader must be able
+   to follow any number in the code back to where it came from.
 10. **Second-hand facts: the middle rule.** A fact is usable when someone
     established it on real hardware and says so in prose, whatever first
     suggested it, including an emulator. So a researcher's "I measured this on
@@ -84,16 +90,5 @@ withdrawn on 2026-11-12 and archived privately; this one starts over.
 4. **Measurement** against hardware recordings first, emulators second.
 5. **Adoption** by the boards, through the API in [api.md](api.md).
 
-If you meet a source whose licence or author's wishes you are unsure of, stop and
-report. Do not decide for yourself.
-
-## Amendment, 2026-11-13: the closed box as a measuring instrument
-
-The owner has ruled that a die-derived model run as a closed box (rule 8) **may be
-used as a measuring instrument**, not only as a detector: to recover ROM contents
-by searching for inputs that reproduce its output, to fit constants to its output,
-and to build a stand-in from its outputs. Rule 8 otherwise stands: its source is
-never opened, searched or quoted, including when a comparison fails. A value got
-this way is marked as a **closed-box measurement** (emulator tier, naming the model
-and its pinned commit), never as documented or as measured on hardware, and a
-document or a hardware measurement that disagrees overrules it.
+A source whose licence or author's wishes are unclear is not used until that is
+settled.

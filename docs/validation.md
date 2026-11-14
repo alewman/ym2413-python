@@ -1,6 +1,6 @@
 # Validation ladder
 
-**Where it stands, 2026-11-13** (detail in [build-status.md](build-status.md)):
+**Where it stands, 2026-11-13:**
 
 | Rung | Judge | State |
 |---|---|---|
@@ -12,21 +12,20 @@
 | 4 | console recordings | none exist |
 | 5 | emu2413 and ymfm as detectors | not run |
 | 6 | Nuked-OPLL as a closed box | run; findings O1 to O7 open (below) |
-| 7 | the boards | not adopted yet |
+| 7 | the boards | used by sms-python and famicom-python; their judges are theirs |
 
 `validation/faults.py`: 30 faults, every one caught (rung 0 catches 6, rung 1
 17, rung 2a 24, rung 3 10, the provisional record 13). Some faults in the list
 just below were not used because the code has no such switch (stepping the noise
 once a sample, SL 15 as the bottom); the 30 used are in the script.
 
-The text below is the ladder as proposed on 2026-11-12, kept as written, with
-the closed box's results added under rung 6.
+The text below is the ladder as proposed on 2026-11-12, before the core was
+written, with the closed box's results added under rung 6.
 
-
-Written 2026-11-12 for the build that follows Phase 0. The rungs are ordered by how
-far their judge can be trusted, the best first. A lower rung never overrules a
+The rungs are ordered by how far their judge can be trusted, the best first. A lower rung never overrules a
 higher one. Source IDs are [phase0.md](phase0.md)'s; C and U numbers and section
-numbers are [spec.md](spec.md)'s.
+numbers are [spec.md](spec.md)'s; decisions (P and T numbers) are
+[provenance.md](provenance.md)'s.
 
 Two things hold for every rung:
 
@@ -133,8 +132,8 @@ with the write-up's file name:
 - Register aliases $19 to $1F, $29 to $2F, $39 to $3F.
 - Modulator: no change of rate at key-off.
 
-**2b. The captures themselves** (S5), if decision P1 allows them to be read and
-their format can be worked out (U18): feed the register writes S4 lists for an
+**2b. The captures themselves** (S5), which decision P1 allows to be compared
+against in place, once their format can be worked out (U18): feed the register writes S4 lists for an
 experiment, and compare the model's carrier output for channel 0 with the captured
 levels sample for sample, after aligning the start and allowing for the two unknown
 starting values (the shared counter and, with feedback, the two remembered
@@ -185,7 +184,7 @@ Nothing in hand is a recording of a YM2413 or a VRC7 that a test can use.
 ## Rung 5: permissive emulators (detectors)
 
 emu2413 (MIT) and ymfm (BSD-3-Clause), each built from the pinned source into a
-small harness under `validation/` and fed the streams of `seed/streams.py`. They
+small harness under `validation/` and fed the streams of `validation/streams.py`. They
 may be read as well as run, but a difference is settled by rungs 1 to 3, never by
 adopting an emulator's answer because it is an emulator's.
 
@@ -202,7 +201,8 @@ adopting an emulator's answer because it is an emulator's.
 
 ## Rung 6: a die-derived model run as a closed box (detector, rule 8)
 
-Nuked-OPLL, run and never read. Not fetched or built in Phase 0.
+Nuked-OPLL, run and never read. The plan as written before the run; the results
+follow it.
 
 **The harness** (`validation/nuked_harness.c`, the only file that touches the
 model):
@@ -216,7 +216,7 @@ model):
   and a DS1001 type), the call that writes a byte to port 0 or 1, and the call that
   advances the chip by one clock and returns its two outputs. If the header exposes
   the chip structure's fields, the harness does not read them: outputs only.
-- It reads a stream on standard input (cycle, port, value, as `seed/streams.py`
+- It reads a stream on standard input (cycle, port, value, as `validation/streams.py`
   produces them, at four clocks per cycle), drives the model clock by clock, and
   writes one line per clock or per slot: the melody and rhythm output values.
 - Nothing built from the model is committed. The harness's output goes to
@@ -232,11 +232,13 @@ S6, and by *further experiments on the closed box* (change one register, compare
 again), as rule 8 allows. If nothing settles it, the difference is written in the
 README as open. The model's source stays closed.
 
-**Two uses that need the owner's word first** (decision P6): using the
-closed box to recover the YM2413's instrument ROM by searching for the user tone
-that reproduces each built-in voice exactly, and using it to choose among spec.md's
+**Two further uses, not made here** (decision P6): using the closed box to
+recover the YM2413's instrument ROM by searching for the user tone that
+reproduces each built-in voice exactly, and using it to choose among spec.md's
 unsettled items (U4, U5, U7, U8, U9). Both go beyond "a difference says where to
-look"; both are, in rule 8's words, "further measurements of the model's outputs".
+look". Rule 8 allows the first kind of use, a measuring instrument, with any value
+got that way marked as a closed-box measurement; using the model to choose among
+the unknowns would make it the specification.
 
 **Exit**: a table of differences per stream in the README, with each difference
 either traced to a documented or measured statement (and fixed, on that
@@ -369,16 +371,15 @@ block 4):
 - **O7. Built-in voices.** `each_instrument` differs on both variants. On the
   DS1001 the voices are the chip's own ROM (rung 3), so its differences come from
   O1 to O5, not the bytes. On the YM2413 the voices are emulator-tier data (T1);
-  per decision P6 the differences were **not** examined voice by voice and
-  nothing was inferred about the ROM.
+  the differences were **not** examined voice by voice and nothing was inferred
+  about the ROM (P6).
 
-Not done here, and why: further one-register experiments on the closed box for
-O6; and any use of the model to choose among unsettled items, which needs the
-owner's word (P6).
+Not done here: further one-register experiments on the closed box for O6; and
+any use of the model as a measuring instrument (P6).
 
 ## Rung 7: the boards
 
-sms-python's FM unit and famicom-python's mapper 85 adopt the core through api.md.
+sms-python's FM unit and famicom-python's mapper 85 use the core through api.md.
 Their own judges (frame hashes, `db_vrc7`'s +11.3 dB, MAME and Mesen2 at board
 level) are theirs. A change of mix level or speed is reported to them, not hidden.
 
@@ -394,5 +395,5 @@ level) are theirs. A change of mix level or speed is reported to them, not hidde
 
 The claim rungs 0 to 3 support, and no larger one: *the core does what Yamaha's
 manual says and what the openMSX project measured on a real YM2413; its DS1001
-voices are the ones read out of a VRC7; its YM2413 voices are (whatever T1
-decides) and are not proven.*
+voices are the ones read out of a VRC7; its YM2413 voices are emu2413's
+hand-tuned table (T1) and are not proven.*

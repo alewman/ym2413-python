@@ -2,7 +2,9 @@
 
 The whole public surface is the six names in `ym2413_python.__all__`. Written
 for the two boards that use the chip: sms-python (the Mark III FM Sound Unit and
-the Japanese Master System) and famicom-python (the VRC7, mapper 85).
+the Japanese Master System) and famicom-python (the VRC7, mapper 85). Spec and U
+numbers are [spec.md](spec.md)'s; T numbers, the provisional defaults, are
+[provenance.md](provenance.md)'s.
 
 ```python
 from ym2413_python import OPLL, YM2413, DS1001, CLOCKS_PER_CYCLE, CYCLES_PER_SAMPLE
