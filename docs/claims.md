@@ -44,6 +44,7 @@ so a tier-1 claim here means "agrees with what S4 reports measuring".
 
 ## Provisional: decisions, not evidence
 
+T numbers are those of [provenance.md](provenance.md); U numbers are spec.md's.
 Held as data on `OPLLVariant` or labelled PROVISIONAL or CHOICE in the code. Each
 is pinned by one test in `tests/test_provisional.py`; they prove nothing about
 hardware.
@@ -76,10 +77,10 @@ hardware.
 |---|---|---|
 | C1 | Each rung can fail: 30 deliberate faults, every one noticed. Rung 0 notices 6, rung 1 17, rung 2a 24, rung 3 10, the provisional tests 13 | `validation/faults.py`, run 2026-11-13 (about 4 minutes) |
 | C2 | Against Nuked-OPLL run as a closed box, plain sines and vibrato agree on every slot; elsewhere the differences are those listed as O1 to O7 in [validation.md](validation.md), all open | `validation/closed_box.py`, run 2026-11-13. Tier 5: a detector |
-| C3 | Nothing in the core was changed because of the closed box, and no constant was fitted to its output | git history; docs/build-status.md |
-| C4 | Nuked-OPLL's `opll.c` was not opened; the harness uses only the three calls its header declares. The header's state structure was seen and is not used | `validation/nuked_harness.c`; build-status.md, "Rule slips" |
+| C3 | Nothing in the core was changed because of the closed box, and no constant was fitted to its output | git history; [validation.md](validation.md), rung 6 |
+| C4 | Nuked-OPLL's `opll.c` was not opened; the harness uses only the three calls its header declares. The header's state structure was seen and is not used | `validation/nuked_harness.c`; [provenance.md](provenance.md), "Material seen and not used" |
 | C5 | One test (`test_test_bit_2_silences_a_modulated_carrier_too`) is an expected failure: S6 says test bit 2 silences the chip, and with a sounding modulator the core does not | `tests/test_community.py` |
-| C6 | Every slip from the rules, however small, is listed | build-status.md, "Rule slips, however small"; provenance-audit.md |
+| C6 | Everything seen during the work that the rules keep out is listed, with what was done about it | [provenance.md](provenance.md), "Material seen and not used" |
 
 ## What has no evidence at all
 

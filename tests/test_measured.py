@@ -5,9 +5,9 @@ Vermaelen in the repository andete/ym2413 (commit 4893d1c), of measurements made
 by driving one real chip from a micro-controller and sampling its two output
 pins. Each test names the write-up its numbers were typed from. The numbers come
 from the write-ups' prose and from their tables of measurements; their program
-fragments were not read (docs/provenance-audit.md). "measured" throughout.
+fragments were not read (docs/provenance.md). "measured" throughout.
 
-Nothing here reads S4's capture files: that is rung 2b (tests/test_captures.py).
+Nothing here reads S4's capture files: that is rung 2b, not done (docs/validation.md).
 """
 
 from __future__ import annotations

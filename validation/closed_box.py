@@ -6,7 +6,7 @@ to look and proves nothing about a chip. Its source was not read
 (docs/restart.md rule 8). ``nuked_harness.c`` drives it through the three calls
 its header declares; everything said about it below was learned from its output.
 A difference is written down in docs/validation.md, never fixed by changing the
-core to agree, and no constant is fitted to the model's output (decision P6).
+core to agree, and no constant is fitted to the model's output (docs/provenance.md, P6).
 
     python validation/closed_box.py            build if needed, run every stream
     python validation/closed_box.py --list     name the streams

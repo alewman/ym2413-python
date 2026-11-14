@@ -1,7 +1,7 @@
 """The chip's fixed tables, each with its source and standing.
 
 Section numbers ("spec 6.3") are those of ``docs/spec.md``; S numbers are the
-sources of ``docs/phase0.md``; ``docs/provenance-audit.md`` has each statement's
+sources of ``docs/phase0.md``; ``docs/provenance.md`` has each statement's
 chain. Nothing here differs between the YM2413 and the DS1001: what differs is in
 ``variants.py``.
 """

@@ -1,14 +1,15 @@
 """The two parts this core models, as data.
 
 Section numbers are those of ``docs/spec.md``; S, C, U and T numbers are its
-sources, contradictions and unknowns and the hand-off brief's technical defaults.
+sources, contradictions and unknowns and the technical defaults of
+``docs/provenance.md``.
 Each field says where its value comes from and how far it can be trusted:
 
 - *documented*: a manufacturer's or community document says so;
 - *measured*: a capture from a real chip says so;
 - *PROVISIONAL*: no source above an emulator settles it; the value is the
-  hand-off brief's default, and a measurement would change the value, not the
-  code.
+  recorded default (``docs/provenance.md``), and a measurement would change the
+  value, not the code.
 
 No logic anywhere asks which variant it is running: it reads these fields.
 

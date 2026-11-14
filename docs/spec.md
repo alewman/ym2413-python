@@ -1,4 +1,4 @@
-# Behaviour specification, first draft
+# Behaviour specification
 
 Written 2026-11-12 from the sources in [phase0.md](phase0.md), in this
 repository's own words. Source IDs (S1, S4, ...) are that document's. No statement
@@ -6,7 +6,7 @@ here comes from a GPL or LGPL program or from the withdrawn core.
 
 **Audited 2026-11-13** before the core was written: every statement was checked
 against the prose of its source, and its chain (source, author, how established,
-what is upstream) is in [provenance-audit.md](provenance-audit.md). Statements the
+what is upstream) is in [provenance.md](provenance.md). Statements the
 audit struck or changed say so below ("audit:"). Where a number's only support
 was a code fragment or a table copied from a GPL program, it is no longer stated
 as measured: it is an unknown with a named, emulator-tier default.
@@ -148,7 +148,7 @@ top cymbal's.
    CC BY-SA page that says it is not exact; the two differ in 31 of 120 bytes.
 5. **The DS1001's 15 instruments: documented, from a read-out of the chip** (S6,
    "dumped using the VRC7 rewired into a debug mode"; S12 prints the same bytes). The
-   table is in S6 and is not repeated here; the build session takes it from the
+   table is in S6 and is not repeated here; `variants.py` takes it from the
    pinned wiki file and cites it. *Audit:* the chain is S6, which cites the
    decapping site's page `vendor:yamaha:opl2` (not readable from here: HTTP 403);
    S6 does not name who made the read-out; S12's comment credits "VRC7 presets ...
@@ -562,7 +562,7 @@ attenuation added to it, and an exponential look-up.
    in a Famicom, its clipping and its filter are the board's (S7, S8).
 
 **What the core hands the boards** is a choice, not a fact about the chip: the
-sequence of output words is the fact. See the hand-off brief, T6.
+sequence of output words is the fact. See [provenance.md](provenance.md), T6.
 
 ## 13. The test register
 
@@ -695,7 +695,7 @@ user-tone notes on a single channel, right to the manual for every documented
 number, and audibly right but not byte-proven for the YM2413's built-in voices
 until U1 is settled. For the DS1001 the built-in voices are byte-proven. Against a
 die-derived model run as a closed box, expect agreement on steady notes and
-differences wherever section 16 has an entry: the streams in `seed/streams.py` named
+differences wherever section 16 has an entry: the streams in `validation/streams.py` named
 `fast_writes`, `back_to_back`, `rhythm_toggles`, `rhythm_key_races` and
 `test_register` are built to find exactly those, and the honest result there is a
 list of differences written down as open, not a pass.

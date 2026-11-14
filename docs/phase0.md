@@ -1,8 +1,10 @@
 # Phase 0: the sources and what each can settle
 
-Written 2026-11-12 under [restart.md](restart.md). No chip model was written and
-`seed/` was not touched. This document lists every source found, how it was read,
-and what it can and cannot settle. The behaviour itself is in [spec.md](spec.md).
+Written 2026-11-12 under [restart.md](restart.md), before any chip model was
+written. This document lists every source found, how it was read, and what it can
+and cannot settle. The behaviour itself is in [spec.md](spec.md); the decisions
+named P1 to P9 below, and everything seen during the work that the rules keep
+out, are in [provenance.md](provenance.md).
 
 ## How to read the table
 
@@ -16,13 +18,13 @@ and what it can and cannot settle. The behaviour itself is in [spec.md](spec.md)
 
 **Read**: *direct* means the file was opened and read here. *summary* means it was
 read through a fetch tool that returns a summary, so nothing from it is quoted as
-exact wording and the build session should open the page before leaning on it.
+exact wording.
 *not read* means not opened, and says why.
 
 Paths under `reference/` are fetched by `scripts/fetch_references.py` and pinned by
-commit and SHA-256. Paths under `/data/emu/sms-python` and
-`/data/emu/famicom-python` are cited in place, not copied;
-`fetch_references.py --local` checks that they are still the bytes read.
+commit and SHA-256. Paths in sms-python and famicom-python (checkouts beside this
+repository) are cited in place, not copied; `fetch_references.py --local` checks
+that they are still the bytes read.
 
 ## Sources read
 
@@ -31,7 +33,7 @@ commit and SHA-256. Paths under `/data/emu/sms-python` and
 | S1 | "FM Operator Type-LL (OPLL) Application Manual", 30 pages: outline, pins, bus, register map, every register, the rate tables, F-number tables, rhythm, DAC figure, electrical data | `sms-python/reference/smspower/chipsym2413am.pdf` (image only). A byte-identical copy is `sms-python/reference/src/ym2413/doc/YM2413am.pdf`. `ym2413am.zip` beside it holds 31 GIF pages of the same manual and was not opened | © Yamaha. "Scanned by Ricardo Bittencourt, cleaned and converted to PDF by HansO, 2001". No licence; cited and quoted briefly | 2 | direct. Every page by OCR; printed pages 4, 5, 6, 8 to 17 and 19 also viewed as images, which is where every table in spec.md was read. OCR of the tables is unusable |
 | S2 | "YM2413 OPLL" catalog sheet, catalog no. LSI-212413A2, 1996.6, 10 pages: pins, block diagram, register map, the envelope figure, timing, electrical data | `ym2413.pdf` inside `sms-python/reference/smspower/ym2413pdf.zip` (image only) | © Yamaha. Its last page says "Copying prohibited © 1987 YAMAHA CORPORATION" (decision P4) | 2 | direct: pages 1 and 3 viewed, the rest by OCR |
 | S3 | "YM2413B OPLL" catalog sheet, catalog no. LSI-212413B2, 1999.5, 10 pages | `sms-python/reference/src/ym2413/doc/YM2413B(-F).pdf` (image only). An 8-page scan of S2 sits beside it as `ym2413_ds.pdf` | © Yamaha | 2 | first page only, viewed. Not studied: see U17 |
-| S4 | The openMSX YM2413 reverse-engineering project: 21 dated write-ups of measurements on a real YM2413 (a micro-controller board drives the chip's pins and clock and samples MO and RO with an ADC), 2015 to 2020 | `sms-python/reference/src/ym2413/results/` (<https://github.com/andete/ym2413> at `4893d1c`). The write-ups are by Wouter Vermaelen (one is signed "Wouter"; the commits are his); the repository is Joost Yervante Damad's ("andete") | **No licence stated.** Read and cited; nothing copied into this repository (decision P1) | 1 | direct, the prose of all 21 files listed in `fetch_references.py`. Long numeric tables and the C fragments printed inside the write-ups were skipped by a filter where possible; see "Rule slips" |
+| S4 | The openMSX YM2413 reverse-engineering project: 21 dated write-ups of measurements on a real YM2413 (a micro-controller board drives the chip's pins and clock and samples MO and RO with an ADC), 2015 to 2020 | `sms-python/reference/src/ym2413/results/` (<https://github.com/andete/ym2413> at `4893d1c`). The write-ups are by Wouter Vermaelen (one is signed "Wouter"; the commits are his); the repository is Joost Yervante Damad's ("andete") | **No licence stated.** Read and cited; nothing copied into this repository (decision P1) | 1 | direct, the prose of all 21 files listed in `fetch_references.py`. Long numeric tables and the C fragments printed inside the write-ups were skipped by a filter where possible; see provenance.md, "Material seen and not used" |
 | S5 | The same project's captured data: 81 `gold-*` rhythm captures, 16 volume captures (`analyze/volume/*.raw`, `*.out`), about 150 plots | `sms-python/reference/src/ym2413/results/rhythm/`, `analyze/volume/`, `results/**/*.png` | as S4 | 1 | not opened, apart from confirming that `gold-sd-000` is a text file. The format is undocumented in what was read (U18) |
 | S6 | NESdev wiki, "VRC7 audio": registers, the test register, the DS1001's instrument set read out through the chip's debug mode, the debug mode's pins, differences from the OPLL | `famicom-python/reference/nesdev-wiki/VRC7_audio.wiki` | NESdev wiki content; no licence in the file; cited | 3 (its instrument table and test-register notes are from hardware) | direct, whole file |
 | S7 | NESdev forum thread 17745, "VRC7 and 5B amplifier investigation, also VRC7 LFO reset!" (rainwarrior and others, 2018) | `famicom-python/reference/nesdev-forum/17745.html` | forum posts; cited | 3, with recordings | direct, the first page's VRC7 passages |
@@ -54,18 +56,18 @@ purpose, and both are permissive.
 |------|---------|
 | siliconpr0n's wiki page "vendor:yamaha:opl2" (<https://siliconpr0n.org/archive/doku.php?id=vendor:yamaha:opl2>), which S6 cites for the "VRC7 Instrument ROM Dump" and S12 cites for "VRC7 presets ... by Nuke.YKT" | The site answers HTTP 403 to a plain fetch, twice. No way round the refusal was tried. It may also hold the YM2413's own instrument ROM; that is a recollection, not something read here. Decision P2 |
 | The die photographs S4 points to (`siliconpr0n.org/map/yamaha/ym2413b/mz_ns50xu/`, `.../fhb013/mz_ns50xu/`), and S4's annotated crops of them | A photograph settles nothing without tracing it. S4's reading of them (register widths, the DAC's 32 by 16 switch array) is taken from S4's prose. S9 says the die is an FHB013, not a YM2413 |
-| S4's source files: `results/**/model*.cc`, `tables.hh`, `ar-dr.cc`, `lfsr.cc`, `rhythm/model6.*`, `sweep.cc`, `top4.cc`, `analyze/*.cc`, `testprog/`, `tool/`, `tool2/` | Emulator and tool source in a repository with no licence. The brief for this phase excludes it |
+| S4's source files: `results/**/model*.cc`, `tables.hh`, `ar-dr.cc`, `lfsr.cc`, `rhythm/model6.*`, `sweep.cc`, `top4.cc`, `analyze/*.cc`, `testprog/`, `tool/`, `tool2/` | Emulator and tool source in a repository with no licence: excluded |
 | S4's `doc/ym2413-instr.ods` beyond its first rows | It tabulates the instrument settings of two emulators (Okazaki's and Burczynski's) side by side. The second is GPL-derived. Opened to see what it was; closed; nothing taken |
-| The section headed "Nuke.YKT" in S4's `rhythm/rhythm.md` | It quotes lines of Nuked-OPLL. See "Rule slips": part of it was read before it was recognised |
+| The section headed "Nuke.YKT" in S4's `rhythm/rhythm.md` | It quotes lines of Nuked-OPLL. Part of it was read before it was recognised: see provenance.md, "Material seen and not used" |
 | Nuked-OPLL, wherever it sits (copies exist at `sms-python/reference/src/Nuked-OPLL` and `famicom-python/reference/src/Nuked-OPLL`) | restart.md rule 1. Not opened, not searched |
 | MAME's `ym2413.cpp` and `ymf262.cpp` (Jarek Burczynski and others, GPL), openMSX's YM2413 engines, Genesis Plus GX, Gearsystem, BlastEm, VGMPlay's cores | restart.md rule 1 |
-| `/data/backup/nuked-derived/` | restart.md rule 2 |
-| famicom-python's and sms-python's `src/` audio code and their descriptions of the old core's internals | the brief for this phase |
+| The withdrawn core and anything derived from it (not published) | restart.md rule 2 |
+| famicom-python's and sms-python's `src/` audio code and their descriptions of the old core's internals | excluded: they describe the withdrawn core |
 | openMSX issue 581, which S4 says holds "new information regarding the YM2413 test register" | An issue thread of a GPL project that may quote its code. Unsure, so not opened. Decision P5 |
-| NESdev forum posts p=236371 ("VRC7 test register described"), p=224897 (the silence bit) and thread 9141 (patch set revisions) | Not in the local snapshot; S6 summarises them. The build session may fetch and read them (reading is allowed; posting is not) |
+| NESdev forum posts p=236371 ("VRC7 test register described"), p=224897 (the silence bit) and thread 9141 (patch set revisions) | Not in the pinned snapshot; S6 summarises them. Reading them is allowed; they have not been fetched |
 | The OPL3 research forum S4 cites (`forums.submarine.org.uk`, posts by "carbon14" and "opl3") | Not fetched. It is about the YMF262; S4 states what it took from it |
 | Yamaha's manuals for the Y8950, YMF262 and YMF278 | S4 quotes their tremolo and vibrato depths (4.8 dB, 14 cents). Not in hand |
-| Kevin Horton's `vrcvii.txt`, zzo38's `vrc7test.zip` (both linked from S6) | Not fetched: no time left in this phase. Worth the build session's while (a hardware-era description and a test program) |
+| Kevin Horton's `vrcvii.txt`, zzo38's `vrc7test.zip` (both linked from S6) | Not fetched yet: a hardware-era description and a test program, both worth reading |
 
 Nothing by the excluded author was fetched, read or cited. S4's files were searched
 for his name before reading (no match). The siliconpr0n photographs S4 uses carry
@@ -94,8 +96,7 @@ Scratch work only, under `reference/scratch/` (not committed):
 
 ## The built-in instruments: where the data can come from
 
-This is the provenance question the brief asked about, so it is answered here in
-one place.
+This is the largest provenance question, so it is answered here in one place.
 
 **DS1001 (VRC7).** Settled. S6 prints the 15 instruments and the three percussion
 rows, "dumped using the VRC7 rewired into a debug mode", citing siliconpr0n. S12
@@ -132,7 +133,8 @@ So today the choices for the YM2413's 15 melodic instruments are: emu2413's tabl
 (MIT, hand-tuned, close); the siliconpr0n page if a person opens it and it proves to
 hold a dump (P2); or values recovered by measurement, either from a real chip
 (nobody in the family has one wired up) or from a reference model run as a closed
-box (decision P6). The recommendation is in the hand-off brief.
+box (decision P6). The core uses emu2413's table, marked as not a dump (T1 in
+provenance.md).
 
 ## What each source can and cannot settle
 
@@ -215,35 +217,9 @@ emulator:
   spacing, the DAC's non-linearity (S4 saw a 32 by 16 pattern and did not tabulate
   it).
 
-## Rule slips and near misses
+## Material seen and not used
 
-Reported in full, however small.
-
-1. **Lines of Nuked-OPLL were seen.** S4's `rhythm/rhythm.md` ends with a section
-   comparing its findings with "Nuke.YKT" and quoting his code. Before the section
-   was recognised for what it is, three quoted expressions (the snare's and the
-   cymbal's phase lines) and a table of that model's percussion settings had been
-   displayed and read. Nothing in spec.md rests on them: the percussion statements
-   cite S4's own measured formulas, which precede that section. The build session
-   should stop reading that file at the heading "## Nuke.YKT", and read the last
-   section ("Update regarding noise bit") only for its prose.
-2. **Fragments S4 says it copied from a GPL core were read.** Three write-ups print
-   small tables and say where they are from: the tremolo sequence ("All emulation
-   cores more or less use the following schema"), the vibrato table ("copied from
-   Burczynski core") and the envelope step patterns ("parameter names taken from the
-   YM2413Burczynski source code"). The filter did not hide them. spec.md states the
-   tremolo and the step patterns from S4's *measurements* of them (durations and
-   segment lengths on the chip, which S4 reports separately); for vibrato only the
-   measured row is marked measured, and the rest is unsettled (U4).
-3. **S4's own C fragments were partly read.** The write-ups print short models
-   (table formulas, the exponent lookup, the operator chain). They are unlicensed
-   source inside a measurement report. Most lines were filtered out; the formulas
-   were read. spec.md restates the behaviour in prose and arithmetic, not in their
-   shape, and P1 asks how far they may be leaned on.
-4. **A spreadsheet of emulator tables was opened** (`doc/ym2413-instr.ods`, see
-   above) to learn what it was.
-5. **A fetch with a browser's user-agent string was attempted** for the siliconpr0n
-   page after the plain fetch was refused; the tool refused the attempt, rightly, and
-   it was not retried another way. A web-archive fetch was also unavailable.
-6. A search summary named GPL emulator files and paraphrased one comment from them
-   ("to-do item to tune up instruments ROM"). Not sought; nothing opened.
+Phase 0 saw some material that the rules keep out: lines of Nuked-OPLL quoted in
+S4's `rhythm.md`, small tables S4 says it copied from a GPL emulator, some of S4's
+own C fragments, and the spreadsheet above. Each item, and what was done about it,
+is listed in [provenance.md](provenance.md), "Material seen and not used".
