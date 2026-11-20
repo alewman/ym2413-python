@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Shared by the tests: ways to drive the chip as a board would and to read it.
 
 Tests read what ``take_outputs()`` returns, or the chip's own word train through

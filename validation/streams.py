@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Synthetic register streams, each exercising one thing: test inputs, not a model.
 
 Times are internal cycles (four input clocks). ``Writer`` spaces writes as

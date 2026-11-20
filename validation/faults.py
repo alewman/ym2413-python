@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Can each rung fail? Break the core on purpose and see which tests notice.
 
 docs/validation.md: every rung's exit asks that the listed faults be caught. Each

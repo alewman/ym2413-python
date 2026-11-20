@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Fetch the references docs/phase0.md relies on into the git-ignored reference/.
 
 Every fetched file is pinned twice: by the commit in its URL, and by the SHA-256
