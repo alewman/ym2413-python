@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Rung 6: Nuked-OPLL run as a closed box beside the core (docs/validation.md).
 
 Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) is a DETECTOR: a difference says where
