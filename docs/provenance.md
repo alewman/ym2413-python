@@ -364,3 +364,13 @@ was done about each. Nothing from any of them is in the code.
    recorded as emulator-tier corroboration under 6.5, 6.11 and 6.12, and the
    core's arithmetic is written from the spec. A reviewer may compare `_operate`
    in `opll.py` with emu2413's `lookup_exp_table` to check independence.
+
+## 5. History
+
+On 2026-11-22 (the family's history clean-up, wave G) `validation/nuked_harness.c`
+left this repository and was removed from every commit with `git filter-repo`; every
+other change kept its commit. The harness is linked with Nuked-OPLL
+(GPL-2.0-or-later), so by the family's rule of 2026-11-19 it is a GPL tool. It is kept
+with the family's other GPL tools (emu-tools-gpl, `tools/ym2413-python`), and
+`validation/closed_box.py` finds it through `YM2413_GPL_TOOLS`. Commit hashes cited
+from before that date refer to the old history, which is kept privately.

@@ -83,7 +83,9 @@ numbers in brackets.
   `test_measured.py` (rung 2a, the openMSX measurements), `test_community.py`
   (rung 3), `test_provisional.py` (the decisions).
 - `validation/`: `streams.py` (synthetic register streams: test inputs, not a
-  model), `faults.py`, `closed_box.py` and `nuked_harness.c` (rung 6).
+  model), `faults.py` and `closed_box.py` (rung 6). The rung's harness,
+  `nuked_harness.c`, is linked with Nuked-OPLL, so it is a GPL tool kept outside
+  this repository: set `YM2413_GPL_TOOLS` to the folder that holds it.
 - `scripts/fetch_references.py`: fetches and verifies the pinned references into
   the git-ignored `reference/`. Nuked-OPLL is fetched for the closed box only;
   its `opll.c` is compiled and never opened.

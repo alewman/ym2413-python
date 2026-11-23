@@ -38,6 +38,7 @@ first difference falls (sample, slot). Exit status is 0 whatever is found.
 from __future__ import annotations
 
 import argparse
+import os
 import struct
 import subprocess
 import sys
@@ -54,6 +55,10 @@ from ym2413_python import DS1001, OPLL, YM2413
 MODEL = ROOT / "reference" / "nuked-opll"
 BUILD = ROOT / "validation" / "build"
 HARNESS = BUILD / "nuked_harness"
+#: The harness is linked with Nuked-OPLL, so it is a GPL tool, kept outside this
+#: repository since 2026-11-22 (docs/provenance.md, "History"): YM2413_GPL_TOOLS names
+#: the folder that holds nuked_harness.c (emu-tools-gpl's tools/ym2413-python).
+GPL_TOOLS = os.environ.get("YM2413_GPL_TOOLS")
 
 #: The header's chip-type numbers.
 CHIP_TYPE = {"YM2413": 0, "DS1001": 1}
@@ -71,7 +76,9 @@ Events = list[tuple[int, int, int]]
 def build() -> None:
     """Compile the harness against the fetched model. Compiler messages are kept
     out of sight (-w, stderr to a file): they would quote the model's source."""
-    sources = [ROOT / "validation" / "nuked_harness.c", MODEL / "opll.c"]
+    if not GPL_TOOLS:
+        sys.exit("nuked_harness.c is a GPL tool kept outside this repository: set YM2413_GPL_TOOLS")
+    sources = [Path(GPL_TOOLS) / "nuked_harness.c", MODEL / "opll.c"]
     for source in sources:
         if not source.exists():
             sys.exit(f"{source} is missing: run scripts/fetch_references.py")

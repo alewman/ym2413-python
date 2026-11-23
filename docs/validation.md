@@ -204,7 +204,8 @@ adopting an emulator's answer because it is an emulator's.
 Nuked-OPLL, run and never read. The plan as written before the run; the results
 follow it.
 
-**The harness** (`validation/nuked_harness.c`, the only file that touches the
+**The harness** (`nuked_harness.c`, kept outside this repository since 2026-11-22
+as a GPL tool and found through `YM2413_GPL_TOOLS`; the only file that touches the
 model):
 
 - `scripts/fetch_references.py` gains a pin for the model's repository at one
@@ -249,7 +250,7 @@ its code was not read.
 
 Run: Nuked-OPLL at commit `1269cf5` (Nuke.YKT, GPL-2.0; its repository has no
 README, so only `opll.h` and `LICENSE` were opened), compiled with
-`validation/nuked_harness.c` by `python validation/closed_box.py`. The model's
+`nuked_harness.c` by `python validation/closed_box.py`. The model's
 `opll.c` was not opened, searched or quoted; the compiler's messages went to an
 unread log. **Nothing in the core was changed because of this rung, and no
 constant was fitted to the model's output.**
