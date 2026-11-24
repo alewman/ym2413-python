@@ -248,8 +248,10 @@ its code was not read.
 
 ### Results, 2026-11-13
 
-Run: Nuked-OPLL at commit `1269cf5` (Nuke.YKT, GPL-2.0; its repository has no
-README, so only `opll.h` and `LICENSE` were opened), compiled with
+Run: Nuked-OPLL at commit `1269cf5` (<https://github.com/nukeykt/Nuked-OPLL>,
+`1269cf5a783b65583b50fa2464d08be75830aaa0`; Nuke.YKT, GPL-2.0; its repository has no
+README, so only `opll.h` and `LICENSE` were opened; not fetched into this repository
+since 2026-11-24, Aubrey, and built only in emu-tools-gpl), compiled with
 `nuked_harness.c` by `python validation/closed_box.py`. The model's
 `opll.c` was not opened, searched or quoted; the compiler's messages went to an
 unread log. **Nothing in the core was changed because of this rung, and no

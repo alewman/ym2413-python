@@ -35,12 +35,12 @@ What is cited in place and only checked by --local (never copied here):
 The two boards are looked for beside this repository; SMS_PYTHON_DIR and
 FAMICOM_PYTHON_DIR name other checkouts.
 
-Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) IS fetched, for the closed-box rung
-only, under docs/restart.md rule 8. Since 2026-11-24 nothing here compiles against
-it: the harness is built in emu-tools-gpl (nuked-harness's opll-stream, under
-EMU_TOOLS_GPL) from that repository's own fetch at the same pin. Only opll.h and LICENSE may be opened
-(the repository has no README). opll.c is never opened, searched or
-quoted, including when a comparison fails.
+Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) is NOT fetched (Aubrey, 2026-11-24).
+It is the closed-box rung's detector (docs/restart.md rule 8), built and run only
+in emu-tools-gpl (nuked-harness's opll-stream, under EMU_TOOLS_GPL). Its header
+and licence are cited as nukeykt/Nuked-OPLL at
+1269cf5a783b65583b50fa2464d08be75830aaa0 (docs/provenance.md); opll.c is never
+opened, searched or quoted.
 """
 
 from __future__ import annotations
@@ -65,9 +65,6 @@ YMFM = "https://raw.githubusercontent.com/aaronsgiles/ymfm/81aec25ccbb98f4873a25
 # A GitHub wiki: the raw host takes no commit in the path. Wiki HEAD when pinned:
 # b8b2030f2ce9f220f66d490924ef26ab17269caa. The SHA-256 below is the real pin.
 PATCHES = "https://raw.githubusercontent.com/wiki/plgDavid/misc"
-NUKED_OPLL = (
-    "https://raw.githubusercontent.com/nukeykt/Nuked-OPLL/1269cf5a783b65583b50fa2464d08be75830aaa0"
-)
 
 # The capture project cited in place is andete/ym2413 at commit
 # 4893d1c09faa0450b5d3355f19b7682d72822501 (2020-05-01).
@@ -141,23 +138,8 @@ PINS: tuple[Pin, ...] = (
         f"{PATCHES}/Copyright-free-OPLL(x)-ROM-patches.md",
         "f49652c807c39e9ca221023d7357747d3ae5a6d45a491f226cf2cfe9fde63437",
     ),
-    # Nuke.YKT, Nuked-OPLL, GPL-2.0-or-later: a closed-box detector (rule 8).
-    # RUN ONLY. opll.c must not be opened; the harness uses opll.h alone.
-    Pin(
-        "nuked-opll/LICENSE",
-        f"{NUKED_OPLL}/LICENSE",
-        "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
-    ),
-    Pin(
-        "nuked-opll/opll.h",
-        f"{NUKED_OPLL}/opll.h",
-        "4af73da64dfcb6a19392104c8d37865da9c3a00382ba377617bc1fe1228e82de",
-    ),
-    Pin(
-        "nuked-opll/opll.c",
-        f"{NUKED_OPLL}/opll.c",
-        "d486915d0238be9650250ac91b0bb4024bfc236acd1893359648e5088144fc45",
-    ),
+    # Nuked-OPLL (rung 6's closed box) is not fetched since 2026-11-24 (Aubrey):
+    # it runs only in emu-tools-gpl. Pinned there at nukeykt/Nuked-OPLL 1269cf5.
 )
 
 # Files cited in place. Checked by --local, never copied.

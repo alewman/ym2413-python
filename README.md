@@ -88,8 +88,9 @@ numbers in brackets.
   this repository: since 2026-11-24 it is nuked-harness's `opll-stream` (built in emu-tools-gpl, run at `$EMU_TOOLS_GPL/tools/nuked/build/opll-stream`); set
   `EMU_TOOLS_GPL`.
 - `scripts/fetch_references.py`: fetches and verifies the pinned references into
-  the git-ignored `reference/`. Nuked-OPLL is fetched for the closed box only;
-  its `opll.c` is never opened, and is compiled only in emu-tools-gpl.
+  the git-ignored `reference/`. Nuked-OPLL is not fetched (Aubrey, 2026-11-24):
+  it is compiled only in emu-tools-gpl, its `opll.c` never opened; its header is
+  cited as nukeykt/Nuked-OPLL at `1269cf5` (docs/provenance.md).
 - `docs/provenance.md`: where each fact comes from, the decisions taken, what was
   not read and why, and what was seen and not used.
 

@@ -296,7 +296,8 @@ left unread with the reason for each. In short:
 
 - **GPL and LGPL source** (restart.md rule 1): Nuked-OPLL wherever a copy sits
   (its `opll.c` is compiled for the closed box and never opened; only `opll.h`
-  and `LICENSE` were opened), MAME's FM cores, openMSX's YM2413 engines, Genesis
+  and `LICENSE` were opened, as nukeykt/Nuked-OPLL at `1269cf5`; its source is not
+  fetched here since 2026-11-24, Aubrey), MAME's FM cores, openMSX's YM2413 engines, Genesis
   Plus GX, Gearsystem, BlastEm, VGMPlay.
 - **The withdrawn core and anything derived from it** (rule 2; not published),
   and the boards' own audio source and their descriptions of the withdrawn
@@ -381,5 +382,14 @@ same command line and records), built there by `tools/nuked/build.sh` with its o
 of Nuked-OPLL at the same pin. `validation/closed_box.py` runs it at
 `$EMU_TOOLS_GPL/tools/nuked/build/opll-stream` (emu-tools/docs/contract.md, section 5) and
 stops with exit status 3 when the variable is unset or the harness is not built. Gated
-before and after: `closed_box.py` gave byte-identical output. `scripts/fetch_references.py`
-still fetches Nuked-OPLL (its header is what the claims cite); nothing here builds from it.
+before and after: `closed_box.py` gave byte-identical output.
+
+On 2026-11-24 (Aubrey: MIT repositories hold no Nuked model's source) the three
+Nuked-OPLL pins left `scripts/fetch_references.py` (`LICENSE`, `opll.h`, `opll.c`);
+nothing here built from or ran from them after the harness moved. The copy fetched
+before was moved, unopened, out of `reference/` to
+`/data/backup/nuked-reference-sources-2026-11-24/` outside the repository, not deleted.
+The header and licence the claims cite stay pinned as
+<https://github.com/nukeykt/Nuked-OPLL> at `1269cf5a783b65583b50fa2464d08be75830aaa0`
+(`opll.h`, `LICENSE`). Gated before and after: `fetch_references.py --verify`, the tests
+and `closed_box.py` gave the same results.
