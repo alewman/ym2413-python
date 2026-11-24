@@ -85,17 +85,18 @@ numbers in brackets.
 - `validation/`: `streams.py` (synthetic register streams: test inputs, not a
   model), `faults.py` and `closed_box.py` (rung 6). The rung's harness,
   `nuked_harness.c`, is linked with Nuked-OPLL, so it is a GPL tool kept outside
-  this repository: set `YM2413_GPL_TOOLS` to the folder that holds it.
+  this repository: since 2026-11-24 it is nuked-harness's `opll-stream` (built in emu-tools-gpl, run at `$EMU_TOOLS_GPL/tools/nuked/build/opll-stream`); set
+  `EMU_TOOLS_GPL`.
 - `scripts/fetch_references.py`: fetches and verifies the pinned references into
   the git-ignored `reference/`. Nuked-OPLL is fetched for the closed box only;
-  its `opll.c` is compiled and never opened.
+  its `opll.c` is never opened, and is compiled only in emu-tools-gpl.
 - `docs/provenance.md`: where each fact comes from, the decisions taken, what was
   not read and why, and what was seen and not used.
 
 ```sh
 python -m pytest                       # all rungs
 python validation/faults.py            # can each rung fail?
-python validation/closed_box.py        # the closed-box comparison (needs a C compiler)
+python validation/closed_box.py        # the closed-box comparison (needs EMU_TOOLS_GPL)
 ```
 
 ## History

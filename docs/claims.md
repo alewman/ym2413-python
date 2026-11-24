@@ -78,7 +78,7 @@ hardware.
 | C1 | Each rung can fail: 30 deliberate faults, every one noticed. Rung 0 notices 6, rung 1 17, rung 2a 24, rung 3 10, the provisional tests 13 | `validation/faults.py`, run 2026-11-13 (about 4 minutes) |
 | C2 | Against Nuked-OPLL run as a closed box, plain sines and vibrato agree on every slot; elsewhere the differences are those listed as O1 to O7 in [validation.md](validation.md), all open | `validation/closed_box.py`, run 2026-11-13. Tier 5: a detector |
 | C3 | Nothing in the core was changed because of the closed box, and no constant was fitted to its output | git history; [validation.md](validation.md), rung 6 |
-| C4 | Nuked-OPLL's `opll.c` was not opened; the harness uses only the three calls its header declares. The header's state structure was seen and is not used | `nuked_harness.c` (a GPL tool outside this repository, `YM2413_GPL_TOOLS`); [provenance.md](provenance.md), "Material seen and not used" |
+| C4 | Nuked-OPLL's `opll.c` was not opened; the harness uses only the three calls its header declares. The header's state structure was seen and is not used | `nuked_harness.c`, now nuked-harness's `opll-stream` (a GPL tool outside this repository, `$EMU_TOOLS_GPL/tools/nuked/build/opll-stream`); [provenance.md](provenance.md), "Material seen and not used" |
 | C5 | One test (`test_test_bit_2_silences_a_modulated_carrier_too`) is an expected failure: S6 says test bit 2 silences the chip, and with a sounding modulator the core does not | `tests/test_community.py` |
 | C6 | Everything seen during the work that the rules keep out is listed, with what was done about it | [provenance.md](provenance.md), "Material seen and not used" |
 

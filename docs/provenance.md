@@ -372,5 +372,14 @@ left this repository and was removed from every commit with `git filter-repo`; e
 other change kept its commit. The harness is linked with Nuked-OPLL
 (GPL-2.0-or-later), so by the family's rule of 2026-11-19 it is a GPL tool. It is kept
 with the family's other GPL tools (emu-tools-gpl, `tools/ym2413-python`), and
-`validation/closed_box.py` finds it through `YM2413_GPL_TOOLS`. Commit hashes cited
+`validation/closed_box.py` found it through `YM2413_GPL_TOOLS`. Commit hashes cited
 from before that date refer to the old history, which is kept privately.
+
+On 2026-11-24 (one variable per tool repository, Aubrey) this repository stopped
+compiling the harness: emu-tools-gpl regrouped it as nuked-harness's `opll-stream` (the
+same command line and records), built there by `tools/nuked/build.sh` with its own fetch
+of Nuked-OPLL at the same pin. `validation/closed_box.py` runs it at
+`$EMU_TOOLS_GPL/tools/nuked/build/opll-stream` (emu-tools/docs/contract.md, section 5) and
+stops with exit status 3 when the variable is unset or the harness is not built. Gated
+before and after: `closed_box.py` gave byte-identical output. `scripts/fetch_references.py`
+still fetches Nuked-OPLL (its header is what the claims cite); nothing here builds from it.

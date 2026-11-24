@@ -36,9 +36,10 @@ The two boards are looked for beside this repository; SMS_PYTHON_DIR and
 FAMICOM_PYTHON_DIR name other checkouts.
 
 Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) IS fetched, for the closed-box rung
-only, under docs/restart.md rule 8: nuked_harness.c (YM2413_GPL_TOOLS) is compiled
-against it and nothing else touches it. Only opll.h and LICENSE may be opened
-(the repository has no README). opll.c is compiled and never opened, searched or
+only, under docs/restart.md rule 8. Since 2026-11-24 nothing here compiles against
+it: the harness is built in emu-tools-gpl (nuked-harness's opll-stream, under
+EMU_TOOLS_GPL) from that repository's own fetch at the same pin. Only opll.h and LICENSE may be opened
+(the repository has no README). opll.c is never opened, searched or
 quoted, including when a comparison fails.
 """
 

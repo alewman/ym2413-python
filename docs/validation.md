@@ -205,8 +205,8 @@ Nuked-OPLL, run and never read. The plan as written before the run; the results
 follow it.
 
 **The harness** (`nuked_harness.c`, kept outside this repository since 2026-11-22
-as a GPL tool and found through `YM2413_GPL_TOOLS`; the only file that touches the
-model):
+as a GPL tool; since 2026-11-24 nuked-harness's `opll-stream` (built in emu-tools-gpl, run at `$EMU_TOOLS_GPL/tools/nuked/build/opll-stream`); the only
+file that touches the model):
 
 - `scripts/fetch_references.py` gains a pin for the model's repository at one
   commit, with a comment that only its public header, its licence and its README

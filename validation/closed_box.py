@@ -4,12 +4,13 @@
 
 Nuked-OPLL (Nuke.YKT, GPL-2.0-or-later) is a DETECTOR: a difference says where
 to look and proves nothing about a chip. Its source was not read
-(docs/restart.md rule 8). ``nuked_harness.c`` drives it through the three calls
-its header declares; everything said about it below was learned from its output.
+(docs/restart.md rule 8). The harness (``nuked_harness.c``, now nuked-harness's
+``opll-stream``, run at $EMU_TOOLS_GPL/tools/nuked/build/opll-stream) drives it
+through the three calls its header declares; everything said about it below was learned from its output.
 A difference is written down in docs/validation.md, never fixed by changing the
 core to agree, and no constant is fitted to the model's output (docs/provenance.md, P6).
 
-    python validation/closed_box.py            build if needed, run every stream
+    python validation/closed_box.py            run every stream (EMU_TOOLS_GPL set)
     python validation/closed_box.py --list     name the streams
     python validation/closed_box.py NAME ...   run some
 
@@ -52,13 +53,12 @@ from streams import STREAMS, Writer
 
 from ym2413_python import DS1001, OPLL, YM2413
 
-MODEL = ROOT / "reference" / "nuked-opll"
-BUILD = ROOT / "validation" / "build"
-HARNESS = BUILD / "nuked_harness"
 #: The harness is linked with Nuked-OPLL, so it is a GPL tool, kept outside this
-#: repository since 2026-11-22 (docs/provenance.md, "History"): YM2413_GPL_TOOLS names
-#: the folder that holds nuked_harness.c (emu-tools-gpl's tools/ym2413-python).
-GPL_TOOLS = os.environ.get("YM2413_GPL_TOOLS")
+#: repository since 2026-11-22 (docs/provenance.md, "History"). Since 2026-11-24 it is
+#: nuked-harness's opll-stream, built in emu-tools-gpl by its tools/nuked/build.sh and
+#: run at its documented path under EMU_TOOLS_GPL (emu-tools/docs/contract.md, section 5).
+TOOL = "tools/nuked/build/opll-stream"
+HARNESS = Path(os.environ["EMU_TOOLS_GPL"]) / TOOL if os.environ.get("EMU_TOOLS_GPL") else None
 
 #: The header's chip-type numbers.
 CHIP_TYPE = {"YM2413": 0, "DS1001": 1}
@@ -74,21 +74,15 @@ Events = list[tuple[int, int, int]]
 
 
 def build() -> None:
-    """Compile the harness against the fetched model. Compiler messages are kept
-    out of sight (-w, stderr to a file): they would quote the model's source."""
-    if not GPL_TOOLS:
-        sys.exit("nuked_harness.c is a GPL tool kept outside this repository: set YM2413_GPL_TOOLS")
-    sources = [Path(GPL_TOOLS) / "nuked_harness.c", MODEL / "opll.c"]
-    for source in sources:
-        if not source.exists():
-            sys.exit(f"{source} is missing: run scripts/fetch_references.py")
-    if HARNESS.exists() and all(HARNESS.stat().st_mtime > s.stat().st_mtime for s in sources):
-        return
-    BUILD.mkdir(parents=True, exist_ok=True)
-    command = ["cc", "-O2", "-w", "-I", str(MODEL), "-o", str(HARNESS), *map(str, sources)]
-    with (BUILD / "cc.log").open("wb") as log:
-        if subprocess.run(command, stderr=log, check=False).returncode:
-            sys.exit("the harness did not compile; validation/build/cc.log is not to be read")
+    """Check that the harness is built; nothing GPL-linked is compiled here. Exit 3
+    (a missing input) when EMU_TOOLS_GPL is unset or the harness is not built."""
+    if HARNESS is None or not HARNESS.exists():
+        print(
+            f"the harness is a GPL tool outside this repository: set EMU_TOOLS_GPL so that "
+            f"$EMU_TOOLS_GPL/{TOOL} exists (built by its tools/nuked/build.sh)",
+            file=sys.stderr,
+        )
+        sys.exit(3)
 
 
 def model_slots(
