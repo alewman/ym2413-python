@@ -387,8 +387,8 @@ before and after: `closed_box.py` gave byte-identical output.
 On 2026-11-24 (Aubrey: MIT repositories hold no Nuked model's source) the three
 Nuked-OPLL pins left `scripts/fetch_references.py` (`LICENSE`, `opll.h`, `opll.c`);
 nothing here built from or ran from them after the harness moved. The copy fetched
-before was moved, unopened, out of `reference/` to
-`/data/backup/nuked-reference-sources-2026-11-24/` outside the repository, not deleted.
+before was moved, unopened, out of `reference/`, aside
+and outside the repository, not deleted.
 The header and licence the claims cite stay pinned as
 <https://github.com/nukeykt/Nuked-OPLL> at `1269cf5a783b65583b50fa2464d08be75830aaa0`
 (`opll.h`, `LICENSE`). Gated before and after: `fetch_references.py --verify`, the tests

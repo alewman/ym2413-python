@@ -59,7 +59,7 @@ purpose, and both are permissive.
 | S4's source files: `results/**/model*.cc`, `tables.hh`, `ar-dr.cc`, `lfsr.cc`, `rhythm/model6.*`, `sweep.cc`, `top4.cc`, `analyze/*.cc`, `testprog/`, `tool/`, `tool2/` | Emulator and tool source in a repository with no licence: excluded |
 | S4's `doc/ym2413-instr.ods` beyond its first rows | It tabulates the instrument settings of two emulators (Okazaki's and Burczynski's) side by side. The second is GPL-derived. Opened to see what it was; closed; nothing taken |
 | The section headed "Nuke.YKT" in S4's `rhythm/rhythm.md` | It quotes lines of Nuked-OPLL. Part of it was read before it was recognised: see provenance.md, "Material seen and not used" |
-| Nuked-OPLL, wherever it sits (copies exist at `sms-python/reference/src/Nuked-OPLL` and `famicom-python/reference/src/Nuked-OPLL`) | restart.md rule 1. Not opened, not searched |
+| Nuked-OPLL, wherever it sits (copies were at `sms-python/reference/src/Nuked-OPLL` and `famicom-python/reference/src/Nuked-OPLL` in Phase 0; famicom-python's moved aside on 2026-11-24, sms-python's in the same sweep) | restart.md rule 1. Not opened, not searched |
 | MAME's `ym2413.cpp` and `ymf262.cpp` (Jarek Burczynski and others, GPL), openMSX's YM2413 engines, Genesis Plus GX, Gearsystem, BlastEm, VGMPlay's cores | restart.md rule 1 |
 | The withdrawn core and anything derived from it (not published) | restart.md rule 2 |
 | famicom-python's and sms-python's `src/` audio code and their descriptions of the old core's internals | excluded: they describe the withdrawn core |
